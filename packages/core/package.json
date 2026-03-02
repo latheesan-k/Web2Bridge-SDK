@@ -1,0 +1,45 @@
+{
+  "name": "@web2bridge/core",
+  "version": "0.0.1",
+  "description": "Zero-storage, stateless cryptography, KDF, and wallet derivation for Web2Bridge SDK",
+  "license": "Apache-2.0",
+  "author": "Latheesan Kanesamoorthy (https://github.com/latheesan-k)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/latheesan-k/Web2Bridge-SDK.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/latheesan-k/Web2Bridge-SDK#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@meshsdk/core": "1.9.0-beta.100",
+    "argon2-browser": "^1.18.0",
+    "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.4.0",
+    "fast-check": "^3.18.0",
+    "tsup": "^8.0.0",
+    "vitest": "^1.4.0"
+  },
+  "sideEffects": false
+}

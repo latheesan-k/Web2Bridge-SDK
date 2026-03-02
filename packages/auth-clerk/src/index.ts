@@ -1,0 +1,1 @@
+export { ClerkAdapter } from "./ClerkAdapter";

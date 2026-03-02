@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "@web2bridge/core": [
+        "../core/src"
+      ],
+      "@web2bridge/core/tests/adapter.contract": [
+        "../core/tests/adapter.contract"
+      ]
+    },
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ]
+}

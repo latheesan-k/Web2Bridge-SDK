@@ -1,0 +1,7 @@
+.idea
+.turbo
+dist
+node_modules
+coverage
+code-coverage-report
+.env

@@ -1,0 +1,43 @@
+{
+  "name": "@web2bridge/auth-clerk",
+  "version": "0.0.1",
+  "description": "Clerk authentication adapter for Web2Bridge SDK",
+  "license": "Apache-2.0",
+  "author": "Latheesan Kanesamoorthy (https://github.com/latheesan-k)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/latheesan-k/Web2Bridge-SDK.git",
+    "directory": "packages/auth-clerk"
+  },
+  "homepage": "https://github.com/latheesan-k/Web2Bridge-SDK#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@clerk/clerk-js": "^5.0.0",
+    "@web2bridge/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "vitest": "^1.4.0",
+    "@vitest/coverage-v8": "^1.4.0"
+  },
+  "sideEffects": false
+}
