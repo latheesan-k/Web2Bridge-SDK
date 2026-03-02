@@ -5,3 +5,5 @@ node_modules
 coverage
 code-coverage-report
 .env
+.direnv
+.claude/settings.local.json
