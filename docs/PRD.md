@@ -17,7 +17,7 @@ The SDK operates as a "Stateless Cryptographic Router" with two entropy paths:
 
 ### 2.1 Primary Path (WebAuthn PRF)
 1. **Auth:** An `AuthAdapter` implementation authenticates the user and surfaces a normalised `userId` string.
-2. **Entropy Generation:** The SDK prompts the device's WebAuthn PRF extension using the namespaced user ID as the relying party salt. The hardware securely outputs a 32-byte predictable secret.
+2. **Entropy Generation:** The SDK prompts the device's WebAuthn PRF extension using the namespaced user ID as the relying on party salt. The hardware securely outputs a 32-byte predictable secret.
 3. **Wallet Derivation:** The SDK combines the namespaced user ID and PRF output using a KDF (default: HKDF-SHA-256, configurable) to generate a BIP39 24-word mnemonic.
 4. **HD Isolation:** The mnemonic is passed into `@meshsdk/core`. The SDK derives an App-Isolated wallet using `m/1852'/1815'/AppID'/0/0` where `AppID` is the first 31 bits of the SHA-256 hash of the dApp's domain string.
 5. **Session:** The wallet is kept in browser memory for signing transactions. Nothing is persisted.
@@ -29,7 +29,7 @@ Activated automatically when WebAuthn PRF is not available on the user's device 
 2. **Entropy Generation:** The user is prompted to create (on registration) or enter (on login) a strong spending password. The SDK derives entropy via **Argon2id** (or PBKDF2 as a lighter alternative) using the password as the secret and the namespaced user ID as the salt.
 3. **Wallet Derivation:** Identical to the primary path — the derived entropy is converted to a BIP39 24-word mnemonic.
 4. **HD Isolation:** Same derivation path: `m/1852'/1815'/AppID'/0/0`.
-5. **Session:** Wallet is kept in browser memory only. The password is never stored. Nothing is persisted.
+5. **Session:** Wallet is kept in browser memory only. The password is never stored. Nothing persisted.
 
 > **Zero-Storage Guarantee:** The fallback path preserves the stateless, zero-storage architecture. The password is required on every login to re-derive the wallet — it is never written to `localStorage`, `sessionStorage`, `IndexedDB`, or any external service.
 
@@ -99,18 +99,18 @@ The SDK core and React packages depend **only** on this interface. No vendor SDK
 
 ### 4.1 Primary Path Support (WebAuthn PRF)
 
-| Environment | PRF Support | Notes |
-|---|---|---|
-| iOS 18+ / iPadOS 18+ — Safari 18+ | ✅ Full | Via iCloud Keychain platform passkeys |
-| Android 14+ — Chrome ≥130 | ✅ Full | Via Google Password Manager; depends on updated Play Services |
-| macOS Sequoia 15.4+ — Chrome/Edge ≥128 or Safari 18.4 | ✅ Full | Requires iCloud Keychain to be enabled |
-| Any platform — YubiKey 5 series, Google Titan M2, Feitian BioPass | ✅ Full | Hardware hmac-secret via any PRF-aware browser |
-| Firefox (all platforms) — hardware security key | 🟡 Partial | PRF works with external CTAP2 keys only; no platform passkey PRF |
-| **Windows Hello (Windows 11)** | ❌ None | Microsoft has not shipped PRF support yet — fallback required |
-| iOS/iPadOS — external USB/NFC security keys | ❌ None | Apple's WebAuthn implementation does not pass PRF extension data to roaming authenticators |
-| Older Android (<14) or Chrome (<130) | ❌ None | Fallback required |
-| iOS/iPadOS <18 | ❌ None | Fallback required |
-| macOS <15 (Sequoia) | ❌ None | Fallback required |
+| Environment                                                       | PRF Support | Notes                                                                                      |
+|-------------------------------------------------------------------|-------------|--------------------------------------------------------------------------------------------|
+| iOS 18+ / iPadOS 18+ — Safari 18+                                 | ✅ Full      | Via iCloud Keychain platform passkeys                                                      |
+| Android 14+ — Chrome ≥130                                         | ✅ Full      | Via Google Password Manager; depends on updated Play Services                              |
+| macOS Sequoia 15.4+ — Chrome/Edge ≥128 or Safari 18.4             | ✅ Full      | Requires iCloud Keychain to be enabled                                                     |
+| Any platform — YubiKey 5 series, Google Titan M2, Feitian BioPass | ✅ Full      | Hardware hmac-secret via any PRF-aware browser                                             |
+| Firefox (all platforms) — hardware security key                   | 🟡 Partial  | PRF works with external CTAP2 keys only; no platform passkey PRF                           |
+| **Windows Hello (Windows 11)**                                    | ❌ None      | Microsoft has not shipped PRF support yet — fallback required                              |
+| iOS/iPadOS — external USB/NFC security keys                       | ❌ None      | Apple's WebAuthn implementation does not pass PRF extension data to roaming authenticators |
+| Older Android (<14) or Chrome (<130)                              | ❌ None      | Fallback required                                                                          |
+| iOS/iPadOS <18                                                    | ❌ None      | Fallback required                                                                          |
+| macOS <15 (Sequoia)                                               | ❌ None      | Fallback required                                                                          |
 
 > **Practical implication:** A significant portion of desktop users (particularly Windows users, who represent the largest desktop OS share) will require the fallback path until Microsoft ships PRF support for Windows Hello.
 
@@ -378,18 +378,18 @@ type Result<T> =
 
 All errors extend a base `Web2BridgeError` class. The full set of typed errors:
 
-| Error Class | Trigger |
-|---|---|
-| `PRFNotSupportedError` | Browser/device does not support WebAuthn PRF and fallback is disabled |
-| `PasskeyRegistrationError` | Passkey creation failed |
-| `PasskeyAuthError` | Passkey authentication failed or was cancelled |
-| `AuthAdapterError` | Generic error surfaced from any `AuthAdapter` implementation; individual adapters may subclass this (e.g. `ClerkAuthError extends AuthAdapterError`) |
-| `DerivationError` | KDF or mnemonic generation failed |
-| `WalletError` | MeshWallet instantiation or signing failed |
-| `ExportVerificationError` | Re-verification for export failed |
-| `WeakPasswordError` | Fallback password does not meet minimum strength requirements |
-| `PasswordAuthError` | Fallback password entry failed or was cancelled |
-| `EntropyPathMismatchError` | User attempts to log in via a different entropy path than was used at registration |
+| Error Class                | Trigger                                                                                                                                              |
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `PRFNotSupportedError`     | Browser/device does not support WebAuthn PRF and fallback is disabled                                                                                |
+| `PasskeyRegistrationError` | Passkey creation failed                                                                                                                              |
+| `PasskeyAuthError`         | Passkey authentication failed or was cancelled                                                                                                       |
+| `AuthAdapterError`         | Generic error surfaced from any `AuthAdapter` implementation; individual adapters may subclass this (e.g. `ClerkAuthError extends AuthAdapterError`) |
+| `DerivationError`          | KDF or mnemonic generation failed                                                                                                                    |
+| `WalletError`              | MeshWallet instantiation or signing failed                                                                                                           |
+| `ExportVerificationError`  | Re-verification for export failed                                                                                                                    |
+| `WeakPasswordError`        | Fallback password does not meet minimum strength requirements                                                                                        |
+| `PasswordAuthError`        | Fallback password entry failed or was cancelled                                                                                                      |
+| `EntropyPathMismatchError` | User attempts to log in via a different entropy path than was used at registration                                                                   |
 
 The React hook surfaces all errors as `error: Web2BridgeError | null` state — consumers never need `try/catch`.
 

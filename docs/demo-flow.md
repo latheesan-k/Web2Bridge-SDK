@@ -50,22 +50,22 @@ This ensures private keys exist in memory **only for the duration of the signing
 
 ## Key SDK Methods Used
 
-| Method | When Used |
-|---|---|
-| `authenticate()` | Phase 1 — social sign-in only |
-| `login({ password })` | Phase 2 & 3 — derive wallet (returns wallet for immediate use) |
-| `lockWallet()` | After every operation — clears wallet from memory |
-| `wallet.getUsedAddresses()` | Phase 2 — extract addresses after wallet creation |
-| `wallet.signData(addr, payload)` | Phase 3 — sign a message |
+| Method                           | When Used                                                      |
+|----------------------------------|----------------------------------------------------------------|
+| `authenticate()`                 | Phase 1 — social sign-in only                                  |
+| `login({ password })`            | Phase 2 & 3 — derive wallet (returns wallet for immediate use) |
+| `lockWallet()`                   | After every operation — clears wallet from memory              |
+| `wallet.getUsedAddresses()`      | Phase 2 — extract addresses after wallet creation              |
+| `wallet.signData(addr, payload)` | Phase 3 — sign a message                                       |
 
 ## Common Mistakes to Avoid
 
-| Mistake | Why It's Wrong |
-|---|---|
-| Asking for password BEFORE social sign-in | Social auth runs first; PRF detection on mount tells you if password is needed |
-| Keeping wallet in memory after login | Private keys must not persist; lock the wallet after each operation |
-| Calling `login()` for auth only | Use `authenticate()` for auth; `login()` also derives a wallet |
-| Showing error alerts for PRF fallback | The `requiresPassword` state handles this seamlessly — no error needed |
+| Mistake                                                         | Why It's Wrong                                                                                        |
+|-----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Asking for password BEFORE social sign-in                       | Social auth runs first; PRF detection on mount tells you if password is needed                        |
+| Keeping wallet in memory after login                            | Private keys must not persist; lock the wallet after each operation                                   |
+| Calling `login()` for auth only                                 | Use `authenticate()` for auth; `login()` also derives a wallet                                        |
+| Showing error alerts for PRF fallback                           | The `requiresPassword` state handles this seamlessly — no error needed                                |
 | Calling `adapter.login()` before checking if password is needed | The provider's early guard prevents this, but the demo should disable the button during PRF detection |
 
 ## Running the Demo

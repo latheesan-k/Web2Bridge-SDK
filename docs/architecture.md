@@ -6,47 +6,47 @@ Everything below the dashed line runs **entirely in the user's browser**. No pri
 
 ```
   ╔══════════════════════════════════════════════════════════════════════════╗
-  ║                         EXTERNAL SERVICES                              ║
-  ║  (only service the SDK talks to — provides identity, never sees keys)  ║
-  ║                                                                        ║
-  ║   ┌─────────────────────────────────────┐                              ║
-  ║   │     Identity Provider (Clerk, …)    │                              ║
-  ║   │                                     │                              ║
-  ║   │  • Google / Apple / GitHub OAuth    │                              ║
-  ║   │  • Returns: user_id, session token  │                              ║
-  ║   │  • Never sees: keys, entropy, pwd   │                              ║
-  ║   └─────────────────────────────────────┘                              ║
+  ║                         EXTERNAL SERVICES                                ║
+  ║  (only service the SDK talks to — provides identity, never sees keys)    ║
+  ║                                                                          ║
+  ║   ┌─────────────────────────────────────┐                                ║
+  ║   │     Identity Provider (Clerk, …)    │                                ║
+  ║   │                                     │                                ║
+  ║   │  • Google / Apple / GitHub OAuth    │                                ║
+  ║   │  • Returns: user_id, session token  │                                ║
+  ║   │  • Never sees: keys, entropy, pwd   │                                ║
+  ║   └─────────────────────────────────────┘                                ║
   ╚═══════════════════════════╤══════════════════════════════════════════════╝
                               │ user_id (only data that crosses the boundary)
   ════════════════════════════╪═══════════════════════════════════════════════
                               │
   ╔═══════════════════════════╧══════════════════════════════════════════════╗
-  ║                     USER'S BROWSER (100% client-side)                   ║
-  ║                                                                        ║
-  ║   ┌──────────────────────────────────────────────────────────────────┐  ║
-  ║   │                      Web2Bridge SDK                             │  ║
-  ║   │                                                                 │  ║
-  ║   │  ┌─────────────┐   ┌──────────────┐   ┌─────────────────────┐  │  ║
-  ║   │  │  AuthAdapter │──▶│  Crypto/KDF  │──▶│ Derivation & Wallet │  │  ║
-  ║   │  │  (identity)  │   │  (entropy)   │   │ (BIP39 → CIP-30)   │  │  ║
-  ║   │  └─────────────┘   └──────┬───────┘   └─────────────────────┘  │  ║
-  ║   │                           │                                     │  ║
-  ║   │                    ┌──────┴───────┐                             │  ║
-  ║   │                    │  WebAuthn /  │                             │  ║
-  ║   │                    │  Password    │                             │  ║
-  ║   │                    │  (secret)    │                             │  ║
-  ║   │                    └──────────────┘                             │  ║
-  ║   └──────────────────────────────────────────────────────────────────┘  ║
-  ║                                                                        ║
-  ║   ┌───────────────────────────────────────┐                            ║
-  ║   │     Device Secure Enclave (optional)  │                            ║
-  ║   │     FaceID / TouchID / YubiKey        │                            ║
-  ║   │     PRF secret never leaves hardware  │                            ║
-  ║   └───────────────────────────────────────┘                            ║
-  ║                                                                        ║
-  ║   Storage used: NONE                                                   ║
-  ║   (no localStorage, sessionStorage, IndexedDB, cookies, or servers)    ║
-  ╚════════════════════════════════════════════════════════════════════════╝
+  ║                     USER'S BROWSER (100% client-side)                    ║
+  ║                                                                          ║
+  ║   ┌──────────────────────────────────────────────────────────────────┐   ║
+  ║   │                      Web2Bridge SDK                              │   ║
+  ║   │                                                                  │   ║
+  ║   │  ┌──────────────┐   ┌──────────────┐   ┌─────────────────────┐   │   ║
+  ║   │  │  AuthAdapter │──▶│  Crypto/KDF  │──▶│ Derivation & Wallet │   │   ║
+  ║   │  │  (identity)  │   │  (entropy)   │   │ (BIP39 → CIP-30)    │   │   ║
+  ║   │  └──────────────┘   └──────┬───────┘   └─────────────────────┘   │   ║
+  ║   │                           │                                      │   ║
+  ║   │                    ┌──────┴───────┐                              │   ║
+  ║   │                    │  WebAuthn /  │                              │   ║
+  ║   │                    │  Password    │                              │   ║
+  ║   │                    │  (secret)    │                              │   ║
+  ║   │                    └──────────────┘                              │   ║
+  ║   └──────────────────────────────────────────────────────────────────┘   ║
+  ║                                                                          ║
+  ║   ┌───────────────────────────────────────┐                              ║
+  ║   │     Device Secure Enclave (optional)  │                              ║
+  ║   │     FaceID / TouchID / YubiKey        │                              ║
+  ║   │     PRF secret never leaves hardware  │                              ║
+  ║   └───────────────────────────────────────┘                              ║
+  ║                                                                          ║
+  ║   Storage used: NONE                                                     ║
+  ║   (no localStorage, sessionStorage, IndexedDB, cookies, or servers)      ║
+  ╚════════════════════════════════════════════════════════════════════──════╝
 ```
 
 ## Package Architecture
@@ -55,11 +55,11 @@ The SDK is split into three packages with strict dependency boundaries. Auth ven
 
 ```
   ┌──────────────────────────────────────────────────────────────────────────┐
-  │                          Your Application                               │
-  │                                                                         │
-  │   import { Web2BridgeProvider, useWeb2Bridge } from "@web2bridge/react" │
-  │   import { ClerkAdapter } from "@web2bridge/auth-clerk"                 │
-  └──────────┬──────────────────────────────────┬───────────────────────────┘
+  │                          Your Application                                │
+  │                                                                          │
+  │   import { Web2BridgeProvider, useWeb2Bridge } from "@web2bridge/react"  │
+  │   import { ClerkAdapter } from "@web2bridge/auth-clerk"                  │
+  └──────────┬──────────────────────────────────┬────────────────────────────┘
              │                                  │
              ▼                                  ▼
   ┌─────────────────────────┐     ┌──────────────────────────────┐
@@ -77,12 +77,12 @@ The SDK is split into three packages with strict dependency boundaries. Auth ven
   │                     @web2bridge/core                         │
   │                                                              │
   │  auth/        AuthAdapter interface, Result<T>, namespacing  │
-  │  crypto/      PRF detection, HKDF, PBKDF2, Argon2id         │
+  │  crypto/      PRF detection, HKDF, PBKDF2, Argon2id          │
   │  derivation/  BIP39 mnemonic, AppID, HD path                 │
   │  wallet/      Web2BridgeWallet (CIP-30 via MeshWallet)       │
   │  errors.ts    Typed error hierarchy                          │
   │                                                              │
-  │  External deps: @meshsdk/core, Web Crypto API, WebAuthn API │
+  │  External deps: @meshsdk/core, Web Crypto API, WebAuthn API  │
   └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -96,10 +96,10 @@ The SDK is split into three packages with strict dependency boundaries. Auth ven
 Both entropy paths (PRF and password) converge at the same derivation engine — same mnemonic format, same HD path, same wallet interface.
 
 ```
-┌──────────────┐     ┌──────────────────┐     ┌──────────────────┐     ┌───────────────┐
+┌───────────────┐     ┌───────────────────┐     ┌───────────────────┐     ┌────────────────┐
 │  Social Login │ ──▶ │ Entropy Generation│ ──▶ │ Wallet Derivation │ ──▶ │  Ready to Sign │
-│  (Clerk, etc) │     │  (PRF / Password) │     │  (HKDF → BIP39)  │     │  (CIP-30)     │
-└──────────────┘     └──────────────────┘     └──────────────────┘     └───────────────┘
+│  (Clerk, etc) │     │  (PRF / Password) │     │  (HKDF → BIP39)   │     │  (CIP-30)      │
+└───────────────┘     └───────────────────┘     └───────────────────┘     └────────────────┘
 ```
 
 ### Primary Path — WebAuthn PRF

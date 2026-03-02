@@ -20,13 +20,13 @@
   │     Party          │ Provider │ Password  │ Mnemonic      │ Keys         │
   │                    │ user_id  │ (secret)  │ (24 words)    │              │
   ├────────────────────┼──────────┼───────────┼───────────────┼──────────────┤
-  │ Auth Provider      │    ✅    │     ❌    │      ❌       │      ❌      │
-  │ dApp Developer     │    ❌    │     ❌    │      ❌       │      ❌      │
-  │ SDK Author         │    ❌    │     ❌    │      ❌       │      ❌      │
-  │ Device Hardware    │    ❌    │  ✅ (PRF) │      ❌       │      ❌      │
-  │ User's Browser     │    ✅    │  ✅ *     │  ✅ (memory)  │  ✅ (memory) │
+  │ Auth Provider      │    ✅     │     ❌     │      ❌        │      ❌       │
+  │ dApp Developer     │    ❌     │     ❌     │      ❌        │      ❌       │
+  │ SDK Author         │    ❌     │     ❌     │      ❌        │      ❌       │
+  │ Device Hardware    │    ❌     │  ✅ (PRF)  │      ❌        │      ❌       │
+  │ User's Browser     │    ✅     │  ✅ *      │  ✅ (memory)   │  ✅ (memory)  │
   │ (during operation) │          │           │               │              │
-  │ After Operation    │    ❌    │     ❌    │      ❌       │      ❌      │
+  │ After Operation    │    ❌     │     ❌     │      ❌        │      ❌       │
   │ (nothing persists) │          │           │               │              │
   └────────────────────┴──────────┴───────────┴───────────────┴──────────────┘
 
@@ -36,15 +36,15 @@
 
 ## Cryptographic Building Blocks
 
-| Primitive | Implementation |
-|---|---|
-| Entropy (primary) | WebAuthn PRF extension — hardware-backed, phishing-resistant |
+| Primitive          | Implementation                                                                    |
+|--------------------|-----------------------------------------------------------------------------------|
+| Entropy (primary)  | WebAuthn PRF extension — hardware-backed, phishing-resistant                      |
 | Entropy (fallback) | Argon2id (64 MB, 3 iter) via `argon2-browser` WASM, or PBKDF2-SHA-256 (210k iter) |
-| Key derivation | HKDF-SHA-256 via Web Crypto API (FIPS-validated) |
-| Mnemonic | BIP39 standard — 256 bits → 24-word mnemonic |
-| HD derivation | BIP32 at `m/1852'/1815'/AppID'/0/0` |
-| Wallet | CIP-30 compatible via `@meshsdk/core` |
-| Password strength | zxcvbn (minimum score 3) |
+| Key derivation     | HKDF-SHA-256 via Web Crypto API (FIPS-validated)                                  |
+| Mnemonic           | BIP39 standard — 256 bits → 24-word mnemonic                                      |
+| HD derivation      | BIP32 at `m/1852'/1815'/AppID'/0/0`                                               |
+| Wallet             | CIP-30 compatible via `@meshsdk/core`                                             |
+| Password strength  | zxcvbn (minimum score 3)                                                          |
 
 ## Cross-device Migration
 

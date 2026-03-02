@@ -20,11 +20,11 @@ Web2Bridge lets users sign in with Google, Apple, or GitHub and **instantly rece
 
 The wallet is derived in-browser from the user's identity plus a hardware-backed passkey (WebAuthn PRF) or a spending password. Nothing is ever stored or transmitted. The same inputs always produce the same wallet.
 
-| Traditional Web3 | Web2Bridge |
-|---|---|
-| Install browser extension | Click "Sign in with Google" |
-| Write down 24 words on paper | Tap FaceID / TouchID |
-| Verify seed phrase | Wallet ready. Done. |
+| Traditional Web3             | Web2Bridge                  |
+|------------------------------|-----------------------------|
+| Install browser extension    | Click "Sign in with Google" |
+| Write down 24 words on paper | Tap FaceID / TouchID        |
+| Verify seed phrase           | Wallet ready. Done.         |
 
 ### Key Properties
 
@@ -40,11 +40,11 @@ The wallet is derived in-browser from the user's identity plus a hardware-backed
 
 ## Packages
 
-| Package | Description | npm |
-|---|---|---|
-| `@web2bridge/core` | Cryptography, KDF, wallet derivation, `AuthAdapter` interface | [![npm](https://img.shields.io/npm/v/@web2bridge/core)](https://www.npmjs.com/package/@web2bridge/core) |
-| `@web2bridge/react` | React provider + `useWeb2Bridge()` hook | [![npm](https://img.shields.io/npm/v/@web2bridge/react)](https://www.npmjs.com/package/@web2bridge/react) |
-| `@web2bridge/auth-clerk` | Clerk adapter (first-party `AuthAdapter` implementation) | [![npm](https://img.shields.io/npm/v/@web2bridge/auth-clerk)](https://www.npmjs.com/package/@web2bridge/auth-clerk) |
+| Package                  | Description                                                   | npm                                                                                                                 |
+|--------------------------|---------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `@web2bridge/core`       | Cryptography, KDF, wallet derivation, `AuthAdapter` interface | [![npm](https://img.shields.io/npm/v/@web2bridge/core)](https://www.npmjs.com/package/@web2bridge/core)             |
+| `@web2bridge/react`      | React provider + `useWeb2Bridge()` hook                       | [![npm](https://img.shields.io/npm/v/@web2bridge/react)](https://www.npmjs.com/package/@web2bridge/react)           |
+| `@web2bridge/auth-clerk` | Clerk adapter (first-party `AuthAdapter` implementation)      | [![npm](https://img.shields.io/npm/v/@web2bridge/auth-clerk)](https://www.npmjs.com/package/@web2bridge/auth-clerk) |
 
 ---
 
@@ -135,15 +135,15 @@ pnpm build
 
 ### Commands
 
-| Command | Description |
-|---|---|
-| `pnpm install` | Install all dependencies |
-| `pnpm build` | Build all packages (Turborepo-orchestrated) |
-| `pnpm test` | Run all tests (Vitest — 289 tests across 3 packages) |
-| `pnpm lint` | Lint all packages (ESLint) |
-| `pnpm typecheck` | Type-check all packages |
-| `pnpm clean` | Remove all build artifacts |
-| `cd demo && pnpm dev` | Start the demo app (Vite, port 3000) |
+| Command               | Description                                          |
+|-----------------------|------------------------------------------------------|
+| `pnpm install`        | Install all dependencies                             |
+| `pnpm build`          | Build all packages (Turborepo-orchestrated)          |
+| `pnpm test`           | Run all tests (Vitest — 289 tests across 3 packages) |
+| `pnpm lint`           | Lint all packages (ESLint)                           |
+| `pnpm typecheck`      | Type-check all packages                              |
+| `pnpm clean`          | Remove all build artifacts                           |
+| `cd demo && pnpm dev` | Start the demo app (Vite, port 3000)                 |
 
 ### Project Structure
 
@@ -202,14 +202,14 @@ See [Demo Flow](docs/demo-flow.md) for the intended 3-phase user experience.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Language | TypeScript (strict mode) |
-| Monorepo | pnpm 9 workspaces + Turborepo |
-| Blockchain | Cardano via `@meshsdk/core` |
-| Authentication | Provider-agnostic `AuthAdapter`; first-party adapter: Clerk |
-| Cryptography | Web Crypto API, WebAuthn API (PRF extension), Argon2id (WASM) |
-| Testing | Vitest + fast-check (property-based) + @testing-library/react |
+| Layer          | Technology                                                    |
+|----------------|---------------------------------------------------------------|
+| Language       | TypeScript (strict mode)                                      |
+| Monorepo       | pnpm 9 workspaces + Turborepo                                 |
+| Blockchain     | Cardano via `@meshsdk/core`                                   |
+| Authentication | Provider-agnostic `AuthAdapter`; first-party adapter: Clerk   |
+| Cryptography   | Web Crypto API, WebAuthn API (PRF extension), Argon2id (WASM) |
+| Testing        | Vitest + fast-check (property-based) + @testing-library/react |
 
 ## License
 

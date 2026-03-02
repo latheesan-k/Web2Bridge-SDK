@@ -20,8 +20,8 @@ Install → Build → Lint → Test → (Publish)
 
 To enable npm publishing on tagged releases, add the following repository secret:
 
-| Secret | Description |
-|---|---|
+| Secret      | Description                                                           |
+|-------------|-----------------------------------------------------------------------|
 | `NPM_TOKEN` | npm access token with publish permissions for the `@web2bridge` scope |
 
 ### Publishing a Release
