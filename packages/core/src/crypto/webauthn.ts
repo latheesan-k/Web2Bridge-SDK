@@ -1,70 +1,16 @@
 /**
- * WebAuthn implementation using SimpleWebAuthn
+ * WebAuthn implementation using native Web Authentication API
  * Handles PRF extension for entropy extraction
+ *
+ * Note: We use the native API instead of SimpleWebAuthn because
+ * SimpleWebAuthn doesn't properly support the PRF extension.
  */
 
-import {
-  startRegistration,
-  startAuthentication,
-} from "@simplewebauthn/browser";
 import {
   PasskeyRegistrationError,
   PasskeyAuthError,
   PRFNotSupportedError,
 } from "../errors";
-
-// Type definitions from @simplewebauthn/types
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface RegistrationResponseJSON {
-  id: string;
-  rawId: string;
-  response: {
-    clientDataJSON: string;
-    attestationObject: string;
-    transports?: string[];
-  };
-  clientExtensionResults: Record<string, unknown>;
-  authenticatorAttachment?: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface AuthenticationResponseJSON {
-  id: string;
-  rawId: string;
-  response: {
-    clientDataJSON: string;
-    authenticatorData: string;
-    signature: string;
-    userHandle?: string;
-  };
-  clientExtensionResults: Record<string, unknown>;
-  authenticatorAttachment?: string;
-}
-
-interface PublicKeyCredentialCreationOptionsJSON {
-  rp: { id?: string; name: string };
-  user: { id: string; name: string; displayName: string };
-  challenge: string;
-  pubKeyCredParams: { alg: number; type: string }[];
-  timeout?: number;
-  excludeCredentials?: { id: string; type: string; transports?: string[] }[];
-  authenticatorSelection?: {
-    authenticatorAttachment?: string;
-    residentKey?: string;
-    userVerification?: string;
-  };
-  attestation?: string;
-  extensions?: Record<string, unknown>;
-}
-
-interface PublicKeyCredentialRequestOptionsJSON {
-  challenge: string;
-  timeout?: number;
-  rpId?: string;
-  allowCredentials?: { id: string; type: string; transports?: string[] }[];
-  userVerification?: string;
-  extensions?: Record<string, unknown>;
-}
 
 export interface PRFCredentialResult {
   credentialId: string;
@@ -84,7 +30,12 @@ export interface PRFExtensionResults {
  * Detect PRF support using client capabilities API
  */
 export async function detectPRFSupport(): Promise<boolean> {
-  if (typeof window === "undefined") return false;
+  console.log("[WebAuthn] Detecting PRF support...");
+
+  if (typeof window === "undefined") {
+    console.log("[WebAuthn] Not in browser environment");
+    return false;
+  }
 
   const pubKey = (window as unknown as Window & {
     PublicKeyCredential?: typeof PublicKeyCredential & {
@@ -92,25 +43,36 @@ export async function detectPRFSupport(): Promise<boolean> {
     };
   }).PublicKeyCredential;
 
-  if (!pubKey) return false;
+  if (!pubKey) {
+    console.log("[WebAuthn] PublicKeyCredential not available");
+    return false;
+  }
 
   // Modern API: getClientCapabilities (Chrome 128+, Safari 18+)
   if (typeof pubKey.getClientCapabilities === "function") {
     try {
+      console.log("[WebAuthn] Trying getClientCapabilities() API");
       const caps = await pubKey.getClientCapabilities();
+      console.log("[WebAuthn] Client capabilities:", caps);
       if (typeof caps?.prf === "boolean") {
+        console.log("[WebAuthn] PRF support from getClientCapabilities:", caps.prf);
         return caps.prf;
       }
-    } catch {
+    } catch (e) {
+      console.log("[WebAuthn] getClientCapabilities() failed:", e);
       // Continue to fallback
     }
+  } else {
+    console.log("[WebAuthn] getClientCapabilities() not available, using fallback detection");
   }
 
   // Fallback: Check UVPA (User Verifying Platform Authenticator)
   try {
     const uvpa = await pubKey.isUserVerifyingPlatformAuthenticatorAvailable();
+    console.log("[WebAuthn] UVPA available:", uvpa);
     if (!uvpa) return false;
-  } catch {
+  } catch (e) {
+    console.log("[WebAuthn] UVPA check failed:", e);
     return false;
   }
 
@@ -144,6 +106,7 @@ export async function detectPRFSupport(): Promise<boolean> {
   }
 
   // Assume supported if UVPA is available - actual support determined during registration
+  console.log("[WebAuthn] PRF assumed supported based on UVPA availability");
   return true;
 }
 
@@ -172,76 +135,115 @@ export async function registerPRFCredential(
   rpId?: string,
   rpName?: string,
 ): Promise<PRFCredentialResult> {
+  console.log("[WebAuthn] Starting PRF credential registration", {
+    namespacedUserId,
+    rpId: rpId ?? window.location.hostname,
+    rpName: rpName ?? "Web2Bridge",
+  });
+
   const prfSalt = await getPRFSalt(namespacedUserId);
+  console.log("[WebAuthn] Generated PRF salt length:", prfSalt.byteLength);
+
   const userIdHash = await crypto.subtle.digest(
     "SHA-256",
     new TextEncoder().encode(namespacedUserId),
   );
 
-  const rp = {
-    id: rpId ?? window.location.hostname,
-    name: rpName ?? "Web2Bridge",
-  };
-
-  const options: PublicKeyCredentialCreationOptionsJSON = {
-    challenge: bufferToBase64URL(crypto.getRandomValues(new Uint8Array(32))),
-    rp,
-    user: {
-      id: bufferToBase64URL(new Uint8Array(userIdHash)),
-      name: namespacedUserId,
-      displayName: namespacedUserId,
-    },
-    pubKeyCredParams: [
-      { alg: -7, type: "public-key" },
-      { alg: -257, type: "public-key" },
-    ],
-    authenticatorSelection: {
-      userVerification: "required",
-      residentKey: "required",
-      authenticatorAttachment: "platform",
-    },
-    extensions: {
-      prf: {
-        eval: {
-          first: bufferToBase64URL(prfSalt),
+  // Create native WebAuthn credential creation options
+  const credentialCreationOptions: CredentialCreationOptions = {
+    publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      rp: {
+        id: rpId ?? window.location.hostname,
+        name: rpName ?? "Web2Bridge",
+      },
+      user: {
+        id: new Uint8Array(userIdHash) as BufferSource,
+        name: namespacedUserId,
+        displayName: namespacedUserId,
+      },
+      pubKeyCredParams: [
+        { alg: -7, type: "public-key" as PublicKeyCredentialType },
+        { alg: -257, type: "public-key" as PublicKeyCredentialType },
+      ],
+      authenticatorSelection: {
+        userVerification: "required" as UserVerificationRequirement,
+        residentKey: "required" as ResidentKeyRequirement,
+        authenticatorAttachment: "platform" as AuthenticatorAttachment,
+      },
+      extensions: {
+        prf: {
+          eval: {
+            first: prfSalt as BufferSource, // Pass raw Uint8Array to native API
+          },
         },
       },
-    } as Record<string, unknown>,
+    },
   };
 
+  console.log("[WebAuthn] Registration options created", {
+    rpId: credentialCreationOptions.publicKey?.rp.id,
+    rpName: credentialCreationOptions.publicKey?.rp.name,
+    userId: bufferToBase64URL(new Uint8Array(userIdHash)),
+    prfSaltLength: prfSalt.byteLength,
+  });
+
+  console.log("[WebAuthn] Calling navigator.credentials.create()...");
+  console.log("[WebAuthn] PRF salt will be passed as Uint8Array of length:", prfSalt.byteLength);
+
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await startRegistration(options as any);
+    const credential = await navigator.credentials.create(credentialCreationOptions);
+
+    if (!credential || credential.type !== "public-key") {
+      throw new PasskeyRegistrationError("Failed to create credential");
+    }
+
+    const pkCredential = credential as PublicKeyCredential;
+    const response = pkCredential.response as AuthenticatorAttestationResponse;
+
+    const credentialId = bufferToBase64URL(new Uint8Array(pkCredential.rawId));
+
+    console.log("[WebAuthn] Registration response received", {
+      id: credentialId,
+      authenticatorAttachment: pkCredential.authenticatorAttachment,
+      transports: response.getTransports?.(),
+    });
 
     // Extract PRF results from clientExtensionResults
-    const extResults = response.clientExtensionResults as PRFExtensionResults;
+    const extResults = pkCredential.getClientExtensionResults() as PRFExtensionResults;
+    console.log("[WebAuthn] clientExtensionResults:", JSON.stringify(extResults, null, 2));
+
     let prfSecret: Uint8Array | undefined;
 
     if (extResults.prf?.results?.first) {
       // PRF returned results during registration
-      prfSecret = base64URLToBuffer(
-        bufferToBase64URL(new Uint8Array(extResults.prf.results.first)),
-      );
+      console.log("[WebAuthn] PRF results returned directly during registration");
+      console.log("[WebAuthn] PRF secret length:", extResults.prf.results.first.byteLength);
+      prfSecret = new Uint8Array(extResults.prf.results.first);
     } else if (extResults.prf?.enabled === true) {
       // PRF is enabled but we need to authenticate to get results
       // This is common for platform authenticators
+      console.log("[WebAuthn] PRF enabled but no results yet, attempting authentication to get secret");
       const authResult = await authenticateWithPRFInternal(
-        response.id,
+        credentialId,
         namespacedUserId,
         rpId,
       );
       prfSecret = authResult.prfSecret;
     } else {
+      console.error("[WebAuthn] PRF extension not supported - extResults.prf:", extResults.prf);
       throw new PasskeyRegistrationError(
         "PRF extension not supported on this device",
       );
     }
 
+    console.log("[WebAuthn] PRF registration successful, secret length:", prfSecret.byteLength);
     return {
-      credentialId: response.id,
+      credentialId,
       prfSecret,
     };
   } catch (error) {
+    console.error("[WebAuthn] PRF registration failed:", error);
     if (
       error instanceof PasskeyRegistrationError ||
       error instanceof PRFNotSupportedError
@@ -270,45 +272,73 @@ async function authenticateWithPRFInternal(
   namespacedUserId: string,
   rpId?: string,
 ): Promise<PRFCredentialResult> {
-  const prfSalt = await getPRFSalt(namespacedUserId);
+  console.log("[WebAuthn] Starting PRF authentication", {
+    credentialId,
+    namespacedUserId,
+    rpId,
+  });
 
-  const options: PublicKeyCredentialRequestOptionsJSON = {
-    challenge: bufferToBase64URL(crypto.getRandomValues(new Uint8Array(32))),
-    allowCredentials: [{ id: credentialId, type: "public-key" }],
-    userVerification: "required",
-    extensions: {
-      prf: {
-        eval: {
-          first: bufferToBase64URL(prfSalt),
+  const prfSalt = await getPRFSalt(namespacedUserId);
+  console.log("[WebAuthn] Generated PRF salt length:", prfSalt.byteLength);
+
+  // Convert to native WebAuthn format
+  const credentialRequestOptions: CredentialRequestOptions = {
+    publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      allowCredentials: [
+        {
+          id: base64URLToBuffer(credentialId) as BufferSource,
+          type: "public-key" as PublicKeyCredentialType,
+        },
+      ],
+      userVerification: "required" as UserVerificationRequirement,
+      rpId,
+      extensions: {
+        prf: {
+          eval: {
+            first: prfSalt as BufferSource, // Pass raw Uint8Array to native API
+          },
         },
       },
-    } as Record<string, unknown>,
+    },
   };
 
-  if (rpId) {
-    options.rpId = rpId;
-  }
+  console.log("[WebAuthn] Calling navigator.credentials.get()...");
+  console.log("[WebAuthn] PRF salt will be passed as Uint8Array of length:", prfSalt.byteLength);
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await startAuthentication(options as any);
+    const credential = await navigator.credentials.get(credentialRequestOptions);
+
+    if (!credential || credential.type !== "public-key") {
+      throw new PasskeyAuthError("Failed to get credential");
+    }
+
+    const pkCredential = credential as PublicKeyCredential;
+    const resultCredentialId = bufferToBase64URL(new Uint8Array(pkCredential.rawId));
+
+    console.log("[WebAuthn] Authentication response received", {
+      id: resultCredentialId,
+      authenticatorAttachment: pkCredential.authenticatorAttachment,
+    });
 
     // Extract PRF results
-    const extResults = response.clientExtensionResults as PRFExtensionResults;
+    const extResults = pkCredential.getClientExtensionResults() as PRFExtensionResults;
+    console.log("[WebAuthn] clientExtensionResults:", JSON.stringify(extResults, null, 2));
 
     if (!extResults.prf?.results?.first) {
+      console.error("[WebAuthn] No PRF results in authentication response");
       throw new PasskeyAuthError(
         "PRF authentication failed - device may not support PRF",
       );
     }
 
+    console.log("[WebAuthn] PRF authentication successful, secret length:", extResults.prf.results.first.byteLength);
     return {
-      credentialId: response.id,
-      prfSecret: base64URLToBuffer(
-        bufferToBase64URL(new Uint8Array(extResults.prf.results.first)),
-      ),
+      credentialId: resultCredentialId,
+      prfSecret: new Uint8Array(extResults.prf.results.first),
     };
   } catch (error) {
+    console.error("[WebAuthn] PRF authentication failed:", error);
     if (error instanceof PasskeyAuthError || error instanceof PRFNotSupportedError) {
       throw error;
     }
