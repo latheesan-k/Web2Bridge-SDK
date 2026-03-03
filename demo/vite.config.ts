@@ -1,11 +1,14 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import wasm from 'vite-plugin-wasm'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  base: process.env.DEMO_BASE_PATH || '/',
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+
+  return {
+  base: env.DEMO_BASE_PATH || '/',
   plugins: [
     react(),
     wasm(),
@@ -22,11 +25,13 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-    hmr: {
-      host: 'demo.lan.disasm.us',
-      protocol: 'wss',
-      clientPort: 443
-    }
+    ...(env.VITE_HMR_HOST && {
+      hmr: {
+        host: env.VITE_HMR_HOST,
+        protocol: env.VITE_HMR_PROTOCOL as 'ws' | 'wss' | undefined,
+        clientPort: env.VITE_HMR_CLIENT_PORT ? parseInt(env.VITE_HMR_CLIENT_PORT, 10) : undefined
+      }
+    })
   },
   build: {
     outDir: 'dist',
@@ -53,4 +58,4 @@ export default defineConfig({
     include: ['@meshsdk/core'],
     exclude: ['argon2-browser']
   }
-})
+}})
