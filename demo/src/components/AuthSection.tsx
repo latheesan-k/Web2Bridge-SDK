@@ -3,33 +3,41 @@ import { useWeb2Bridge } from '@web2bridge/react'
 import { useUser } from '@clerk/clerk-react'
 import { PRFNotSupportedError } from '@web2bridge/core'
 
-interface AuthSectionProps {
-  onSignedMessage: (cbor: string) => void
-  onWalletIssued: () => void
-}
-
 interface WalletAddresses {
   payment: string
   stake: string
   networkId: number
 }
 
-function AuthSection({ onSignedMessage, onWalletIssued }: AuthSectionProps) {
+function AuthSection() {
   const {
-    isAuthenticated, error, requiresPassword, prfSupported,
-    authenticate, login, lockWallet,
+    isAuthenticated,
+    isWalletInitialized,
+    isWalletReady,
+    walletAddresses,
+    isAutoIssuing,
+    error,
+    requiresPassword,
+    prfSupported,
+    authenticate,
+    autoIssueWallet,
+    signMessage,
   } = useWeb2Bridge()
   const { user } = useUser()
 
   const [isAuthenticating, setIsAuthenticating] = useState(false)
-  const [addresses, setAddresses] = useState<WalletAddresses | null>(null)
   const [walletPassword, setWalletPassword] = useState('')
-  const [isCreatingWallet, setIsCreatingWallet] = useState(false)
+  const [signPassword, setSignPassword] = useState('')
+  const [message, setMessage] = useState('')
+  const [signedCbor, setSignedCbor] = useState<string | null>(null)
+  const [isSigning, setIsSigning] = useState(false)
+  const [signError, setSignError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
   const isDetecting = prfSupported === null
 
-  // ── Phase 1: Not authenticated ──────────────────────────────────────
-  if (!isAuthenticated) {
+  // ── Phase 1: Not authenticated, no wallet ─────────────────────────────
+  if (!isAuthenticated && !isWalletReady) {
     return (
       <div>
         <div className="section-label">🔐 Get Started</div>
@@ -71,8 +79,8 @@ function AuthSection({ onSignedMessage, onWalletIssued }: AuthSectionProps) {
             ) : (
               <ol className="steps">
                 <li>Sign in with Google, GitHub, or email</li>
-                <li>{prfSupported ? 'Confirm with biometrics (FaceID / TouchID)' : 'Enter your spending password'}</li>
-                <li>Your wallet is ready — sign messages, verify signatures</li>
+                <li>{prfSupported ? 'Your wallet will be secured with biometrics' : 'Enter a spending password to secure your wallet'}</li>
+                <li>Sign messages with lazy authentication — keys exist only during signing</li>
               </ol>
             )}
           </div>
@@ -81,17 +89,17 @@ function AuthSection({ onSignedMessage, onWalletIssued }: AuthSectionProps) {
     )
   }
 
-  // ── Phase 2: Authenticated, wallet not yet issued ───────────────────
-  if (!addresses) {
+  // ── Phase 2: Authenticated, wallet not yet initialized ────────────────
+  if (isAuthenticated && !isWalletInitialized && !isWalletReady) {
     return (
       <div>
         <div className="section-label">✅ Authenticated</div>
         <div className="card">
           <div className="card-title">Welcome{user?.primaryEmailAddress ? `, ${user.primaryEmailAddress.emailAddress}` : ''}</div>
           <div className="card-sub">
-            Signed in successfully. {requiresPassword
-              ? 'Enter a spending password to derive your wallet.'
-              : 'Unlocking your wallet with biometrics...'}
+            {requiresPassword
+              ? 'Enter a spending password to create your secure wallet.'
+              : 'Setting up your biometric wallet...'}
           </div>
 
           {error && !(error instanceof PRFNotSupportedError) && (
@@ -121,189 +129,158 @@ function AuthSection({ onSignedMessage, onWalletIssued }: AuthSectionProps) {
           <button
             className="btn-primary"
             onClick={handleCreateWallet}
-            disabled={isCreatingWallet || (requiresPassword && !walletPassword)}
+            disabled={isAutoIssuing || (requiresPassword && !walletPassword)}
             style={{ maxWidth: 320, margin: requiresPassword ? '16px auto 0' : '0 auto' }}
           >
-            {isCreatingWallet
-              ? <><span className="spinner" /> Deriving wallet...</>
-              : 'Issue Wallet'}
+            {isAutoIssuing
+              ? <><span className="spinner" /> Creating wallet...</>
+              : requiresPassword
+                ? 'Create Wallet'
+                : <><span className="spinner" /> Auto-configuring...</>}
           </button>
         </div>
       </div>
     )
   }
 
-  async function handleCreateWallet() {
-    setIsCreatingWallet(true)
-    const result = await login(requiresPassword ? { password: walletPassword } : undefined)
-    if (result.data) {
-      const w = result.data
-      const addrs = await w.getUsedAddresses()
-      const rewards = await w.getRewardAddresses()
-      const net = await w.getNetworkId()
-      if (!addrs.error && addrs.data?.length && !rewards.error && rewards.data?.length) {
-        setAddresses({
-          payment: addrs.data[0],
-          stake: rewards.data[0],
-          networkId: net.data ?? 0,
-        })
-        onWalletIssued()
-      }
-      lockWallet()
-    }
-    setIsCreatingWallet(false)
+  // ── Phase 3: Wallet initialized but addresses not cached (PRF path) ────
+  if (isWalletInitialized && !isWalletReady) {
+    return (
+      <div>
+        <div className="section-label">🔐 Wallet Ready</div>
+        <div className="card">
+          <div className="card-title">Your Wallet is Secured</div>
+          <div className="card-sub">
+            Your wallet is secured with {requiresPassword ? 'your spending password' : 'biometric authentication'}.
+            Compose a message to unlock and sign.
+          </div>
+
+          <div className="alert alert-info" style={{ textAlign: 'left', marginBottom: 16 }}>
+            <strong>Lazy Authentication:</strong> Your wallet keys are not loaded in memory.
+            {requiresPassword
+              ? ' Enter your password when signing to temporarily unlock.'
+              : ' Authenticate with biometrics when signing to temporarily unlock.'}
+          </div>
+
+          {renderSignForm(null, true)}
+        </div>
+      </div>
+    )
   }
 
-  // ── Phase 3: Wallet issued — show addresses + sign-per-operation ────
-  return <WalletPanel addresses={addresses} requiresPassword={requiresPassword} onSignedMessage={onSignedMessage} />
-}
+  // ── Phase 4: Wallet ready with cached addresses ──────────────────────
+  if (isWalletReady && walletAddresses) {
+    return (
+      <div>
+        <div className="section-label">✅ Wallet Active</div>
+        <div className="card">
+          <div className="card-title">
+            Your Wallet
+            <span className={`badge ${walletAddresses.networkId === 1 ? 'badge-mainnet' : 'badge-network'}`} style={{ fontSize: '0.65rem', marginLeft: 8 }}>
+              {walletAddresses.networkId === 1 ? 'Mainnet' : 'Preprod Testnet'}
+            </span>
+          </div>
+          <div className="card-sub">
+            Wallet secured via {requiresPassword ? 'spending password' : 'biometrics'} — keys exist only during signing.
+          </div>
 
+          <div className="identity-section">
+            <div className="identity-row">
+              <div className="identity-label">
+                <span className="identity-icon">🔑</span>
+                Stake Address <span className="identity-hint">(your unique on-chain identity)</span>
+              </div>
+              <div className="mono-box identity-value">{walletAddresses.stake}</div>
+            </div>
+            <div className="identity-row">
+              <div className="identity-label">
+                <span className="identity-icon">💳</span>
+                Payment Address <span className="identity-hint">(receive funds here)</span>
+              </div>
+              <div className="mono-box identity-value">{walletAddresses.payment}</div>
+            </div>
+          </div>
 
-interface WalletPanelProps {
-  addresses: WalletAddresses
-  requiresPassword: boolean
-  onSignedMessage: (cbor: string) => void
-}
+          <div className="divider" />
 
-function WalletPanel({ addresses, requiresPassword, onSignedMessage }: WalletPanelProps) {
-  const { login, lockWallet } = useWeb2Bridge()
+          {renderSignForm(walletAddresses, false)}
+        </div>
+      </div>
+    )
+  }
 
-  const [message, setMessage] = useState('')
-  const [signPassword, setSignPassword] = useState('')
-  const [signedCbor, setSignedCbor] = useState<string | null>(null)
-  const [isSigning, setIsSigning] = useState(false)
-  const [signError, setSignError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
-
-  const networkLabel = addresses.networkId === 1 ? 'Mainnet' : 'Preprod Testnet'
-
-  const handleSign = async () => {
-    if (!message.trim() || (requiresPassword && !signPassword)) return
-    setIsSigning(true)
-    setSignError(null)
-    setSignedCbor(null)
-
-    const result = await login(requiresPassword ? { password: signPassword } : undefined)
-    if (result.error) {
-      setSignError(result.error.message)
-      setIsSigning(false)
-      return
+  async function handleCreateWallet() {
+    const result = await autoIssueWallet(requiresPassword ? walletPassword : undefined)
+    if (!result.error) {
+      setWalletPassword('')
     }
+  }
 
-    const wallet = result.data!
-    const payload = JSON.stringify({
-      stake_address: addresses.stake,
-      message: message.trim(),
-    })
+  function renderSignForm(_addresses: WalletAddresses | null, isFirstSign: boolean) {
+    const handleSign = async () => {
+      if (!message.trim() || (requiresPassword && !signPassword)) return
+      setIsSigning(true)
+      setSignError(null)
+      setSignedCbor(null)
 
-    try {
-      const sigResult = await wallet.signData(addresses.payment, payload)
-      if (sigResult.error) {
-        setSignError(sigResult.error.message)
-      } else if (sigResult.data) {
-        setSignedCbor(sigResult.data)
-        onSignedMessage(sigResult.data)
+      const result = await signMessage(message.trim(), requiresPassword ? signPassword : undefined)
+
+      if (result.error) {
+        setSignError(result.error.message)
+      } else if (result.data) {
+        setSignedCbor(result.data)
       }
-    } catch (err) {
-      setSignError(err instanceof Error ? err.message : 'Signing failed')
-    } finally {
-      lockWallet()
+
       setSignPassword('')
       setIsSigning(false)
     }
-  }
 
-  const handleCopy = () => {
-    if (signedCbor) {
-      navigator.clipboard.writeText(signedCbor)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+    const handleCopy = () => {
+      if (signedCbor) {
+        navigator.clipboard.writeText(signedCbor)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      }
     }
-  }
 
-  return (
-    <div>
-      <div className="section-label">✅ Wallet Issued</div>
-      <div className="card">
-        <div className="card-title">
-          Your Wallet
-          <span className={`badge ${addresses.networkId === 1 ? 'badge-mainnet' : 'badge-network'}`} style={{ fontSize: '0.65rem', marginLeft: 8 }}>
-            {networkLabel}
-          </span>
+    return (
+      <>
+        <div className="form-group" style={{ marginTop: 16 }}>
+          <label htmlFor="message">Message to Sign</label>
+          <textarea
+            id="message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Enter any message..."
+            rows={3}
+          />
         </div>
-        <div className="card-sub">
-          Authenticated via social login, verified, and wallet issued.
-          Secured via {requiresPassword ? 'spending password' : 'biometrics'} — keys exist only in your browser during signing.
-        </div>
-
-        <div className="identity-section">
-          <div className="identity-row">
-            <div className="identity-label">
-              <span className="identity-icon">🔑</span>
-              Stake Address <span className="identity-hint">(your unique on-chain identity)</span>
-            </div>
-            <div className="mono-box identity-value">{addresses.stake}</div>
-          </div>
-          <div className="identity-row">
-            <div className="identity-label">
-              <span className="identity-icon">💳</span>
-              Payment Address <span className="identity-hint">(receive funds here)</span>
-            </div>
-            <div className="mono-box identity-value">{addresses.payment}</div>
-          </div>
-          <div className="identity-row">
-            <div className="identity-label">
-              <span className="identity-icon">🌐</span>
-              Network
-            </div>
-            <div className="identity-meta">
-              {networkLabel} (ID: {addresses.networkId}) — {addresses.networkId === 1
-                ? 'Real ADA transactions'
-                : 'Test network for development'}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="section-label">✍️ Sign a Message</div>
-      <div className="card">
-        <div className="card-sub" style={{ marginBottom: 12 }}>
-          Prove ownership of your wallet by signing a message with your private key.
-          {requiresPassword ? ' Re-enter your spending password to unlock signing.' : ''}
-        </div>
-
-        <label htmlFor="msg-input">Message</label>
-        <input
-          id="msg-input"
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message to sign..."
-          style={{ marginBottom: 12 }}
-          onKeyDown={(e) => { if (e.key === 'Enter' && message.trim() && (!requiresPassword || signPassword)) handleSign() }}
-        />
 
         {requiresPassword && (
-          <>
+          <div className="password-section" style={{ marginTop: 12 }}>
             <label htmlFor="sign-password">Spending Password</label>
             <input
               id="sign-password"
               type="password"
               value={signPassword}
               onChange={(e) => setSignPassword(e.target.value)}
-              placeholder="Re-enter to unlock signing..."
-              style={{ marginBottom: 12 }}
-              onKeyDown={(e) => { if (e.key === 'Enter' && signPassword && message.trim()) handleSign() }}
+              placeholder="Enter your spending password to unlock..."
+              onKeyDown={(e) => { if (e.key === 'Enter' && message.trim() && (!requiresPassword || signPassword)) handleSign() }}
             />
-          </>
+          </div>
         )}
 
         <button
           className="btn-primary"
           onClick={handleSign}
           disabled={isSigning || !message.trim() || (requiresPassword && !signPassword)}
+          style={{ marginTop: 16 }}
         >
-          {isSigning ? <><span className="spinner" /> Unlocking &amp; Signing...</> : 'Sign Message'}
+          {isSigning
+            ? <><span className="spinner" /> {isFirstSign ? 'Unlocking & Signing...' : 'Unlocking & Signing...'}</>
+            : requiresPassword
+              ? 'Unlock Wallet & Sign'
+              : 'Authenticate & Sign'}
         </button>
 
         {signError && (
@@ -311,24 +288,33 @@ function WalletPanel({ addresses, requiresPassword, onSignedMessage }: WalletPan
             {signError}
           </div>
         )}
-      </div>
 
-      {signedCbor && (
-        <div className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <div className="card-title" style={{ marginBottom: 0 }}>Signed Output</div>
-            <button className="btn-copy" onClick={handleCopy}>
-              {copied ? '✓ Copied' : 'Copy'}
-            </button>
+        {signedCbor && (
+          <div style={{ marginTop: 16 }}>
+            <div className="alert alert-success">
+              <strong>Message signed successfully!</strong>
+            </div>
+            <div className="identity-row" style={{ marginTop: 12 }}>
+              <div className="identity-label">Signature (CBOR)</div>
+              <div className="mono-box" style={{ fontSize: '0.75rem', wordBreak: 'break-all' }}>
+                {signedCbor}
+              </div>
+              <button
+                className="btn-sm"
+                onClick={handleCopy}
+                style={{ marginTop: 8 }}
+              >
+                {copied ? '✓ Copied!' : 'Copy Signature'}
+              </button>
+            </div>
           </div>
-          <div className="cbor-box">{signedCbor}</div>
-          <div className="alert alert-info" style={{ fontSize: '0.78rem' }}>
-            ↓ This signature has been auto-verified in the section below.
-          </div>
-        </div>
-      )}
-    </div>
-  )
+        )}
+      </>
+    )
+  }
+
+  // Fallback (should not reach here)
+  return null
 }
 
 export default AuthSection

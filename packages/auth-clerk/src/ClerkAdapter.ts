@@ -8,19 +8,28 @@ import type { AuthAdapter, Result } from "@web2bridge/core";
 import { AuthAdapterError, ok, err } from "@web2bridge/core";
 
 export interface ClerkAdapterConfig {
-  publishableKey: string;
+  publishableKey?: string;
+  /** Optional Clerk instance from @clerk/clerk-react to share session state */
+  clerk?: InstanceType<typeof Clerk>;
 }
 
 export class ClerkAdapter implements AuthAdapter {
   /** Stable provider identifier — MUST NOT change after first deployment. PRD §2.3. */
   readonly providerId = "clerk";
 
-  private readonly publishableKey: string;
+  private readonly publishableKey?: string;
   private clerk: InstanceType<typeof Clerk> | null = null;
   private loadPromise: Promise<InstanceType<typeof Clerk>> | null = null;
 
   constructor(config: ClerkAdapterConfig) {
+    if (!config.clerk && !config.publishableKey) {
+      throw new Error("ClerkAdapter requires either a publishableKey or a clerk instance");
+    }
     this.publishableKey = config.publishableKey;
+    // If an external Clerk instance is provided, use it directly
+    if (config.clerk) {
+      this.clerk = config.clerk;
+    }
   }
 
   /**
@@ -121,5 +130,15 @@ export class ClerkAdapter implements AuthAdapter {
    */
   isAuthenticated(): boolean {
     return this.clerk?.user != null;
+  }
+
+  /**
+   * Restore session state on app initialization.
+   * Loads Clerk and returns true if user has an active session.
+   * This prevents UI flicker by ensuring auth state is known before rendering.
+   */
+  async restoreSession(): Promise<boolean> {
+    const clerk = await this.ensureClerk();
+    return clerk.user != null;
   }
 }

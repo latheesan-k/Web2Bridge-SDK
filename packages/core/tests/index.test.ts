@@ -25,6 +25,7 @@ describe("Core Package Index Exports", () => {
     expect(exports.getPasswordStrengthScore).toBeDefined();
     expect(exports.verifyPasswordEntropy).toBeDefined();
     expect(exports.detectPRFSupport).toBeDefined();
+    expect(exports.isPRFSupported).toBeDefined();
     expect(exports.registerPRFCredential).toBeDefined();
     expect(exports.authenticateWithPRF).toBeDefined();
     expect(exports.getPRFSecret).toBeDefined();

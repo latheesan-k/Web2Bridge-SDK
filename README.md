@@ -139,7 +139,7 @@ pnpm build
 |-----------------------|------------------------------------------------------|
 | `pnpm install`        | Install all dependencies                             |
 | `pnpm build`          | Build all packages (Turborepo-orchestrated)          |
-| `pnpm test`           | Run all tests (Vitest — 289 tests across 3 packages) |
+| `pnpm test`           | Run all tests (Vitest — 314 tests across 3 packages) |
 | `pnpm lint`           | Lint all packages (ESLint)                           |
 | `pnpm typecheck`      | Type-check all packages                              |
 | `pnpm clean`          | Remove all build artifacts                           |
@@ -208,7 +208,8 @@ See [Demo Flow](docs/demo-flow.md) for the intended 3-phase user experience.
 | Monorepo       | pnpm 9 workspaces + Turborepo                                 |
 | Blockchain     | Cardano via `@meshsdk/core`                                   |
 | Authentication | Provider-agnostic `AuthAdapter`; first-party adapter: Clerk   |
-| Cryptography   | Web Crypto API, WebAuthn API (PRF extension), Argon2id (WASM) |
+| WebAuthn       | `@simplewebauthn/browser` for PRF operations                  |
+| Cryptography   | Web Crypto API, ChaCha20-Poly1305, Argon2id (WASM)            |
 | Testing        | Vitest + fast-check (property-based) + @testing-library/react |
 
 ## License

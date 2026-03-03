@@ -6,6 +6,14 @@ export interface AuthAdapter {
   logout(): Promise<Result<void>>;
   getUserId(): Promise<Result<string>>;
   isAuthenticated(): boolean;
+
+  /**
+   * Restore session state on app initialization.
+   * Resolves when the auth adapter has fully initialized and auth state is definitively known.
+   * Returns true if user has an active session, false otherwise.
+   * This prevents UI flicker by allowing the app to wait for session restoration before rendering.
+   */
+  restoreSession(): Promise<boolean>;
 }
 
 export type Result<T> =

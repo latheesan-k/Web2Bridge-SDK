@@ -2,7 +2,9 @@
 
 ## Where are the private keys stored?
 
-**Nowhere.** Private keys are never stored — not in `localStorage`, `sessionStorage`, `IndexedDB`, cookies, or any server. The wallet is deterministically re-derived from the user's identity + entropy source on every signing operation. Keys exist only in browser memory for the duration of the operation, then are destroyed.
+**In memory only by default.** Private keys are never persisted to `localStorage`, `sessionStorage`, `IndexedDB`, cookies, or any server. The wallet can be deterministically re-derived from the user's identity + entropy source on every signing operation.
+
+**Optional encrypted storage:** For the password fallback path, the SDK optionally supports encrypted wallet storage using ChaCha20-Poly1305 (via `@noble/ciphers`). The encrypted mnemonic is stored in localStorage and decrypted on demand with the user's spending password. This is disabled by default — use the wallet factory methods to enable it.
 
 ## What if your servers get hacked?
 
@@ -36,15 +38,28 @@
 
 ## Cryptographic Building Blocks
 
-| Primitive          | Implementation                                                                    |
-|--------------------|-----------------------------------------------------------------------------------|
-| Entropy (primary)  | WebAuthn PRF extension — hardware-backed, phishing-resistant                      |
-| Entropy (fallback) | Argon2id (64 MB, 3 iter) via `argon2-browser` WASM, or PBKDF2-SHA-256 (210k iter) |
-| Key derivation     | HKDF-SHA-256 via Web Crypto API (FIPS-validated)                                  |
-| Mnemonic           | BIP39 standard — 256 bits → 24-word mnemonic                                      |
-| HD derivation      | BIP32 at `m/1852'/1815'/AppID'/0/0`                                               |
-| Wallet             | CIP-30 compatible via `@meshsdk/core`                                             |
-| Password strength  | zxcvbn (minimum score 3)                                                          |
+| Primitive             | Implementation                                                                    |
+|-----------------------|-----------------------------------------------------------------------------------|
+| Entropy (primary)     | WebAuthn PRF via `@simplewebauthn/browser` — hardware-backed, phishing-resistant  |
+| Entropy (fallback)    | Argon2id (64 MB, 3 iter) via `argon2-browser` WASM, or PBKDF2-SHA-256 (210k iter) |
+| Key derivation        | HKDF-SHA-256 via Web Crypto API (FIPS-validated)                                  |
+| Encryption (optional) | ChaCha20-Poly1305 via `@noble/ciphers`                                            |
+| Mnemonic              | BIP39 standard — 256 bits → 24-word mnemonic                                      |
+| HD derivation         | BIP32 at `m/1852'/1815'/AppID'/0/0`                                               |
+| Wallet                | CIP-30 compatible via `@meshsdk/core`                                             |
+| Password strength     | zxcvbn (minimum score 3)                                                          |
+
+## Password Requirements (Encrypted Wallet Storage)
+
+When using the password fallback path with encrypted wallet storage:
+
+- **Minimum length:** 8 characters
+- **Strength requirement:** zxcvbn score of 3 or higher (out of 4)
+- **Key derivation:** Argon2id with 64MB memory, 3 iterations
+- **Encryption:** ChaCha20-Poly1305 with 256-bit keys
+- **Password handling:** Password bytes are cleared from memory immediately after key derivation
+
+Weak passwords are rejected during wallet creation to ensure adequate protection for the encrypted mnemonic.
 
 ## Cross-device Migration
 

@@ -21,7 +21,7 @@ vi.mock("@web2bridge/core", async () => {
   const actual = await vi.importActual<typeof import("@web2bridge/core")>("@web2bridge/core");
   return {
     ...actual,
-    detectPRFSupport: vi.fn().mockResolvedValue(false),
+    isPRFSupported: vi.fn().mockResolvedValue(false),
     getPRFSecret: vi.fn(),
     authenticateWithPRF: vi.fn(),
     generateEntropy: vi.fn(),
@@ -66,7 +66,7 @@ vi.mock("@web2bridge/core", async () => {
 
 // Import mocked modules for assertions
 import {
-  detectPRFSupport,
+  isPRFSupported,
   generateEntropyFromPassword,
   entropyToMnemonic,
   createWallet,
@@ -116,7 +116,7 @@ describe("Web2BridgeProvider — hardware detection at init", () => {
   });
 
   it("exposes prfSupported=false and requiresPassword=true when PRF is unavailable", async () => {
-    vi.mocked(detectPRFSupport).mockResolvedValue(false);
+    vi.mocked(isPRFSupported).mockResolvedValue(false);
     const adapter = createMockAdapter();
 
     const { result } = renderHook(() => useWeb2Bridge(), {
@@ -130,7 +130,7 @@ describe("Web2BridgeProvider — hardware detection at init", () => {
   });
 
   it("exposes prfSupported=true and requiresPassword=false when PRF is available", async () => {
-    vi.mocked(detectPRFSupport).mockResolvedValue(true);
+    vi.mocked(isPRFSupported).mockResolvedValue(true);
     const adapter = createMockAdapter();
 
     const { result } = renderHook(() => useWeb2Bridge(), {
@@ -144,7 +144,7 @@ describe("Web2BridgeProvider — hardware detection at init", () => {
   });
 
   it("exposes requiresPassword=false when PRF unsupported but fallback disabled", async () => {
-    vi.mocked(detectPRFSupport).mockResolvedValue(false);
+    vi.mocked(isPRFSupported).mockResolvedValue(false);
     const adapter = createMockAdapter();
     const config: Web2BridgeConfig = {
       ...defaultConfig,
@@ -165,7 +165,7 @@ describe("Web2BridgeProvider — hardware detection at init", () => {
 describe("Web2BridgeProvider — login flow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(detectPRFSupport).mockResolvedValue(false);
+    vi.mocked(isPRFSupported).mockResolvedValue(false);
     vi.mocked(generateEntropyFromPassword).mockResolvedValue(
       ok(new Uint8Array(32).fill(42))
     );
@@ -353,7 +353,7 @@ describe("Web2BridgeProvider — login flow", () => {
 describe("Web2BridgeProvider — logout flow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(detectPRFSupport).mockResolvedValue(false);
+    vi.mocked(isPRFSupported).mockResolvedValue(false);
     vi.mocked(generateEntropyFromPassword).mockResolvedValue(
       ok(new Uint8Array(32).fill(42))
     );
@@ -429,7 +429,7 @@ describe("Web2BridgeProvider — logout flow", () => {
 describe("Web2BridgeProvider — exportRecoveryPhrase flow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(detectPRFSupport).mockResolvedValue(false);
+    vi.mocked(isPRFSupported).mockResolvedValue(false);
     vi.mocked(generateEntropyFromPassword).mockResolvedValue(
       ok(new Uint8Array(32).fill(42))
     );
@@ -622,8 +622,8 @@ describe("Web2BridgeProvider — exportRecoveryPhrase flow", () => {
 describe("Web2BridgeProvider — PRF path login", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(detectPRFSupport).mockResolvedValue(true);
-    vi.mocked(entropyToMnemonic).mockReturnValue(
+    vi.mocked(isPRFSupported).mockResolvedValue(true);
+    vi.mocked(entropyToMnemonic).mockResolvedValue(
       ok(Array(24).fill("abandon"))
     );
     vi.mocked(createWallet).mockReturnValue(
@@ -649,7 +649,10 @@ describe("Web2BridgeProvider — PRF path login", () => {
 
   it("completes PRF login when PRF is supported", async () => {
     const { getPRFSecret, generateEntropy } = await import("@web2bridge/core");
-    vi.mocked(getPRFSecret).mockResolvedValue(new ArrayBuffer(32));
+    vi.mocked(getPRFSecret).mockResolvedValue({
+      credentialId: "test-credential-id",
+      prfSecret: new Uint8Array(32),
+    });
     vi.mocked(generateEntropy).mockResolvedValue(
       ok(new Uint8Array(32).fill(42))
     );
@@ -671,7 +674,10 @@ describe("Web2BridgeProvider — PRF path login", () => {
 
   it("falls back to password when PRF entropy generation fails and fallback enabled", async () => {
     const { getPRFSecret, generateEntropy } = await import("@web2bridge/core");
-    vi.mocked(getPRFSecret).mockResolvedValue(new ArrayBuffer(32));
+    vi.mocked(getPRFSecret).mockResolvedValue({
+      credentialId: "test-credential-id",
+      prfSecret: new Uint8Array(32),
+    });
     vi.mocked(generateEntropy).mockResolvedValue(
       err(new DerivationError("entropy failed"))
     );
@@ -697,8 +703,8 @@ describe("Web2BridgeProvider — PRF path login", () => {
 describe("Web2BridgeProvider — PRF path exportRecoveryPhrase", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(detectPRFSupport).mockResolvedValue(true);
-    vi.mocked(entropyToMnemonic).mockReturnValue(
+    vi.mocked(isPRFSupported).mockResolvedValue(true);
+    vi.mocked(entropyToMnemonic).mockResolvedValue(
       ok(Array(24).fill("abandon"))
     );
     vi.mocked(createWallet).mockReturnValue(
@@ -724,13 +730,16 @@ describe("Web2BridgeProvider — PRF path exportRecoveryPhrase", () => {
 
   it("exports recovery phrase via PRF re-authentication", async () => {
     const { getPRFSecret, generateEntropy } = await import("@web2bridge/core");
-    vi.mocked(getPRFSecret).mockResolvedValue(new ArrayBuffer(32));
+    vi.mocked(getPRFSecret).mockResolvedValue({
+      credentialId: "test-credential-id",
+      prfSecret: new Uint8Array(32),
+    });
     vi.mocked(generateEntropy).mockResolvedValue(
       ok(new Uint8Array(32).fill(42))
     );
     vi.mocked(authenticateWithPRF).mockResolvedValue({
-      credentialId: new ArrayBuffer(16),
-      prfSecret: new ArrayBuffer(32),
+      credentialId: "test-credential-id",
+      prfSecret: new Uint8Array(32),
     });
 
     const adapter = createMockAdapter();
@@ -754,7 +763,10 @@ describe("Web2BridgeProvider — PRF path exportRecoveryPhrase", () => {
 
   it("returns error when PRF re-authentication fails during export", async () => {
     const { getPRFSecret, generateEntropy } = await import("@web2bridge/core");
-    vi.mocked(getPRFSecret).mockResolvedValue(new ArrayBuffer(32));
+    vi.mocked(getPRFSecret).mockResolvedValue({
+      credentialId: "test-credential-id",
+      prfSecret: new Uint8Array(32),
+    });
     vi.mocked(generateEntropy).mockResolvedValue(
       ok(new Uint8Array(32).fill(42))
     );

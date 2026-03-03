@@ -1,8 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { ClerkProvider } from '@clerk/clerk-react'
-import { Web2BridgeProvider } from '@web2bridge/react'
-import { ClerkAdapter } from '@web2bridge/auth-clerk'
 import App from './App'
 
 const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -16,22 +14,10 @@ if (!clerkKey) {
   )
 }
 
-const adapter = new ClerkAdapter({ publishableKey: clerkKey })
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ClerkProvider publishableKey={clerkKey}>
-      <Web2BridgeProvider
-        adapter={adapter}
-        config={{
-          appDomain,
-          networkId,
-          kdf: 'hkdf',
-          fallback: { enabled: true, kdf: 'pbkdf2' },
-        }}
-      >
-        <App />
-      </Web2BridgeProvider>
+      <App clerkKey={clerkKey} networkId={networkId} appDomain={appDomain} />
     </ClerkProvider>
   </React.StrictMode>
 )

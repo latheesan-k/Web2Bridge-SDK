@@ -29,22 +29,47 @@ type Result<T> =
 
 ## Core Package (`@web2bridge/core`)
 
+### PRF Detection
 ```ts
-detectPRFSupport(): Promise<boolean>
+isPRFSupported(): Promise<boolean>
+detectPRFSupportDetailed(): Promise<PRFDetectionResult>
+```
 
+### Entropy Generation
+```ts
 generateEntropy(namespacedUserId: string, prfSecret: Uint8Array, options?: KdfOptions): Promise<Result<Uint8Array>>
 generateEntropyFromPassword(namespacedUserId: string, password: string, options?: FallbackKdfOptions): Promise<Result<Uint8Array>>
+```
 
+### Derivation
+```ts
 entropyToMnemonic(entropy: Uint8Array): Result<string[]>
 deriveAppId(domain: string): number
 buildHDPath(appId: number): string
-
-createWallet(mnemonic: string[], appId: number): Result<Web2BridgeWallet>
-
 buildNamespacedUserId(providerId: string, rawUserId: string): string
+```
 
+### Wallet Factory
+```ts
+createPRFWallet(options: PRFWalletOptions): Promise<Result<WalletCreationResult>>
+unlockPasswordWallet(options: PasswordWalletOptions): Promise<Result<WalletCreationResult>>
+clearStoredWallet(): Promise<Result<void>>
+```
+
+### Wallet Instance
+```ts
+createWallet(mnemonic: string[], appId: number): Result<Web2BridgeWallet>
+```
+
+### Password Utilities
+```ts
 validatePasswordStrength(password: string): Result<void>
 getPasswordStrengthScore(password: string): number
+```
+
+### Storage
+```ts
+LocalWalletStorage: WalletStorage
 ```
 
 ## Writing a Custom Adapter
@@ -80,3 +105,5 @@ All errors extend `Web2BridgeError`:
 | `WeakPasswordError` | Fallback password does not meet minimum strength requirements |
 | `PasswordAuthError` | Fallback password entry failed or was cancelled |
 | `EntropyPathMismatchError` | User attempts to log in via a different entropy path than registration |
+| `StorageError` | localStorage operation failed |
+| `EncryptionError` | ChaCha20-Poly1305 encryption/decryption failed |

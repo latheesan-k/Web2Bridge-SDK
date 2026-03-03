@@ -4,12 +4,17 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
-  detectPRFSupport,
+  detectPRFSupportDetailed,
   registerPRFCredential,
   authenticateWithPRF,
   getPRFSecret,
 } from "../src/crypto/prf";
 import { PRFNotSupportedError, PasskeyRegistrationError, PasskeyAuthError } from "../src/errors";
+
+// Skip tests that require actual WebAuthn support in environments without it
+const hasWebAuthnSupport = typeof navigator !== "undefined" && typeof window !== "undefined" &&
+  typeof window.PublicKeyCredential !== "undefined";
+const describeWebAuthn = hasWebAuthnSupport ? describe : describe.skip;
 
 function createMockCredential(prfOutput: ArrayBuffer | null, rawId?: ArrayBuffer) {
   return {
@@ -21,21 +26,21 @@ function createMockCredential(prfOutput: ArrayBuffer | null, rawId?: ArrayBuffer
   };
 }
 
-describe("detectPRFSupport", () => {
+describe("detectPRFSupportDetailed", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
   it("returns false when window is undefined (Node environment)", async () => {
     vi.stubGlobal("window", undefined);
-    const result = await detectPRFSupport();
-    expect(result).toBe(false);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(false);
   });
 
   it("returns false when PublicKeyCredential is not available", async () => {
     vi.stubGlobal("window", {});
-    const result = await detectPRFSupport();
-    expect(result).toBe(false);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(false);
   });
 
   it("returns true when getClientCapabilities reports prf: true", async () => {
@@ -44,8 +49,8 @@ describe("detectPRFSupport", () => {
         getClientCapabilities: vi.fn().mockResolvedValue({ prf: true }),
       },
     });
-    const result = await detectPRFSupport();
-    expect(result).toBe(true);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(true);
   });
 
   it("returns false when getClientCapabilities reports prf: false", async () => {
@@ -54,8 +59,8 @@ describe("detectPRFSupport", () => {
         getClientCapabilities: vi.fn().mockResolvedValue({ prf: false }),
       },
     });
-    const result = await detectPRFSupport();
-    expect(result).toBe(false);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(false);
   });
 
   it("falls back to platform authenticator check when getClientCapabilities has no prf", async () => {
@@ -65,8 +70,8 @@ describe("detectPRFSupport", () => {
         isUserVerifyingPlatformAuthenticatorAvailable: vi.fn().mockResolvedValue(false),
       },
     });
-    const result = await detectPRFSupport();
-    expect(result).toBe(false);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(false);
   });
 
   it("uses conditional mediation when platform authenticator is available", async () => {
@@ -77,11 +82,11 @@ describe("detectPRFSupport", () => {
         isConditionalMediationAvailable: vi.fn().mockResolvedValue(true),
       },
     });
-    const result = await detectPRFSupport();
-    expect(result).toBe(true);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(true);
   });
 
-  it("returns false when conditional mediation is unavailable", async () => {
+  it("returns true when conditional mediation is unavailable but UVPAA passes", async () => {
     vi.stubGlobal("window", {
       PublicKeyCredential: {
         getClientCapabilities: vi.fn().mockResolvedValue({}),
@@ -89,11 +94,12 @@ describe("detectPRFSupport", () => {
         isConditionalMediationAvailable: vi.fn().mockResolvedValue(false),
       },
     });
-    const result = await detectPRFSupport();
-    expect(result).toBe(false);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(true);
+    expect(result.level).toBe("possible");
   });
 
-  it("returns false when conditional mediation throws", async () => {
+  it("returns true when conditional mediation throws but UVPAA passes", async () => {
     vi.stubGlobal("window", {
       PublicKeyCredential: {
         getClientCapabilities: vi.fn().mockResolvedValue({}),
@@ -101,8 +107,9 @@ describe("detectPRFSupport", () => {
         isConditionalMediationAvailable: vi.fn().mockRejectedValue(new Error("fail")),
       },
     });
-    const result = await detectPRFSupport();
-    expect(result).toBe(false);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(true);
+    expect(result.level).toBe("possible");
   });
 
   it("returns false when getClientCapabilities throws", async () => {
@@ -112,22 +119,23 @@ describe("detectPRFSupport", () => {
         isUserVerifyingPlatformAuthenticatorAvailable: vi.fn().mockResolvedValue(false),
       },
     });
-    const result = await detectPRFSupport();
-    expect(result).toBe(false);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(false);
   });
 
-  it("returns false when isUVPAA is available but no conditional mediation function", async () => {
+  it("returns true when isUVPAA is available but no conditional mediation function", async () => {
     vi.stubGlobal("window", {
       PublicKeyCredential: {
         isUserVerifyingPlatformAuthenticatorAvailable: vi.fn().mockResolvedValue(true),
       },
     });
-    const result = await detectPRFSupport();
-    expect(result).toBe(false);
+    const result = await detectPRFSupportDetailed();
+    expect(result.supported).toBe(true);
+    expect(result.level).toBe("possible");
   });
 });
 
-describe("registerPRFCredential", () => {
+describeWebAuthn("registerPRFCredential", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
@@ -261,7 +269,7 @@ describe("registerPRFCredential", () => {
   });
 });
 
-describe("authenticateWithPRF", () => {
+describeWebAuthn("authenticateWithPRF", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
@@ -371,7 +379,7 @@ describe("authenticateWithPRF", () => {
   });
 });
 
-describe("getPRFSecret", () => {
+describeWebAuthn("getPRFSecret", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });

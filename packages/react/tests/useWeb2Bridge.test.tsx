@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, waitFor } from "@testing-library/react";
 import React from "react";
 import { Web2BridgeProvider, useWeb2Bridge, timingSafeStringEqual, type Web2BridgeConfig } from "../src/useWeb2Bridge";
 import type { AuthAdapter, Result, Web2BridgeError } from "@web2bridge/core";
-import { ok, err, detectPRFSupport } from "@web2bridge/core";
+import { ok, err, isPRFSupported } from "@web2bridge/core";
 
 vi.mock("@web2bridge/core", () => ({
   ok: vi.fn((data) => ({ data, error: null })),
   err: vi.fn((error) => ({ data: null, error })),
-  detectPRFSupport: vi.fn().mockResolvedValue(false),
+  isPRFSupported: vi.fn().mockResolvedValue(false),
   generateEntropy: vi.fn(),
   generateEntropyFromPassword: vi.fn(),
   buildNamespacedUserId: vi.fn((providerId: string, rawUserId: string) => `${providerId}:${rawUserId}`),
@@ -25,6 +25,14 @@ vi.mock("@web2bridge/core", () => ({
       kdf: config.fallback?.kdf ?? "argon2id",
     },
   })),
+  createInitStateStorage: vi.fn(() => ({
+    store: vi.fn().mockResolvedValue({ data: undefined, error: null }),
+    retrieve: vi.fn().mockResolvedValue({ data: null, error: null }),
+    clear: vi.fn().mockResolvedValue({ data: undefined, error: null }),
+    hasState: vi.fn().mockResolvedValue(false),
+    belongsToUser: vi.fn().mockResolvedValue(false),
+  })),
+  unlockPasswordWallet: vi.fn(),
   Web2BridgeError: class Web2BridgeError extends Error {
     constructor(message: string) {
       super(message);
@@ -98,7 +106,7 @@ describe("Web2BridgeProvider", () => {
   beforeEach(() => {
     mockAdapter = new MockAdapter();
     vi.clearAllMocks();
-    vi.mocked(detectPRFSupport).mockResolvedValue(false);
+    vi.mocked(isPRFSupported).mockResolvedValue(false);
   });
 
   const config: Web2BridgeConfig = {
@@ -110,17 +118,19 @@ describe("Web2BridgeProvider", () => {
     },
   };
 
-  it("renders children without crashing", () => {
+  it("renders children without crashing", async () => {
     render(
       <Web2BridgeProvider adapter={mockAdapter} config={config}>
         <div data-testid="child">Test Child</div>
       </Web2BridgeProvider>
     );
 
-    expect(screen.getByTestId("child")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId("child")).toBeInTheDocument();
+    });
   });
 
-  it("provides default context values before login", () => {
+  it("provides default context values before login", async () => {
     function TestComponent() {
       const { isReady, isAuthenticated, wallet, error, entropyPath, prfSupported, requiresPassword } = useWeb2Bridge();
       return (
@@ -141,7 +151,9 @@ describe("Web2BridgeProvider", () => {
       </Web2BridgeProvider>
     );
 
-    expect(screen.getByTestId("isReady").textContent).toBe("true");
+    await waitFor(() => {
+      expect(screen.getByTestId("isReady").textContent).toBe("true");
+    });
     expect(screen.getByTestId("isAuthenticated").textContent).toBe("false");
     expect(screen.getByTestId("wallet").textContent).toBe("null");
     expect(screen.getByTestId("error").textContent).toBe("null");
@@ -149,7 +161,7 @@ describe("Web2BridgeProvider", () => {
   });
 
   it("throws when useWeb2Bridge is used outside provider", () => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => { });
 
     expect(() => {
       render(<TestComponentOutside />);
@@ -158,7 +170,7 @@ describe("Web2BridgeProvider", () => {
     vi.restoreAllMocks();
   });
 
-  it("exposes login, logout, and exportRecoveryPhrase functions", () => {
+  it("exposes login, logout, and exportRecoveryPhrase functions", async () => {
     function TestComponent() {
       const { login, logout, exportRecoveryPhrase } = useWeb2Bridge();
       return (
@@ -176,12 +188,14 @@ describe("Web2BridgeProvider", () => {
       </Web2BridgeProvider>
     );
 
-    expect(screen.getByTestId("loginType").textContent).toBe("function");
+    await waitFor(() => {
+      expect(screen.getByTestId("loginType").textContent).toBe("function");
+    });
     expect(screen.getByTestId("logoutType").textContent).toBe("function");
     expect(screen.getByTestId("exportType").textContent).toBe("function");
   });
 
-  it("provides access to adapter providerId", () => {
+  it("provides access to adapter providerId", async () => {
     function TestComponent() {
       const { wallet } = useWeb2Bridge();
       return <div data-testid="hasWallet">{String(wallet !== null)}</div>;
@@ -193,7 +207,9 @@ describe("Web2BridgeProvider", () => {
       </Web2BridgeProvider>
     );
 
-    expect(screen.getByTestId("hasWallet").textContent).toBe("false");
+    await waitFor(() => {
+      expect(screen.getByTestId("hasWallet").textContent).toBe("false");
+    });
   });
 });
 
@@ -271,7 +287,7 @@ describe("Logout functionality", () => {
   beforeEach(() => {
     mockAdapter = new MockAdapter();
     vi.clearAllMocks();
-    vi.mocked(detectPRFSupport).mockResolvedValue(false);
+    vi.mocked(isPRFSupported).mockResolvedValue(false);
   });
 
   const config: Web2BridgeConfig = {
@@ -302,11 +318,15 @@ describe("Logout functionality", () => {
       </Web2BridgeProvider>
     );
 
-    expect(screen.getByTestId("authenticated").textContent).toBe("false");
+    await waitFor(() => {
+      expect(screen.getByTestId("authenticated").textContent).toBe("false");
+    });
     expect(screen.getByTestId("hasWallet").textContent).toBe("false");
     expect(screen.getByTestId("path").textContent).toBe("null");
 
-    await screen.getByTestId("logoutBtn").click();
+    await act(async () => {
+      screen.getByTestId("logoutBtn").click();
+    });
 
     expect(screen.getByTestId("authenticated").textContent).toBe("false");
     expect(screen.getByTestId("hasWallet").textContent).toBe("false");
@@ -320,7 +340,7 @@ describe("ExportRecoveryPhrase functionality", () => {
   beforeEach(() => {
     mockAdapter = new MockAdapter();
     vi.clearAllMocks();
-    vi.mocked(detectPRFSupport).mockResolvedValue(false);
+    vi.mocked(isPRFSupported).mockResolvedValue(false);
   });
 
   const config: Web2BridgeConfig = {

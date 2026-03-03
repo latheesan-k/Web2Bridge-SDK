@@ -15,7 +15,7 @@ Standard commands are in the root `package.json` and each package's `package.jso
 - **Install:** `pnpm install`
 - **Build:** `pnpm build` (runs turbo across all packages — all 4 packages including demo)
 - **Lint:** `pnpm lint` (ESLint 8 with `@typescript-eslint/*` — declared in root devDependencies)
-- **Test:** `pnpm test` (runs vitest in core/react/auth-clerk packages; 289 tests total)
+- **Test:** `pnpm test` (runs vitest in core/react/auth-clerk packages; 314 tests total)
 - **Dev server:** `cd demo && pnpm dev` (Vite on port 3000)
 
 ### SDK / Demo flow (critical — read before making changes)
@@ -34,9 +34,13 @@ The SDK and demo follow a **3-phase flow** with **wallet-per-operation security*
 
 ### SDK architecture
 
-- `@web2bridge/core` — `Web2BridgeWallet` is a full CIP-30 wrapper around MeshWallet. All methods return `Result<T>`.
-- `@web2bridge/react` — `Web2BridgeProvider` detects WebAuthn PRF on mount. The `useWeb2Bridge()` hook exposes `authenticate()`, `login()`, `lockWallet()`, `logout()`, and wallet/auth state.
+- `@web2bridge/core` — `Web2BridgeWallet` is a full CIP-30 wrapper around MeshWallet. All methods return `Result<T>`. New wallet factory methods (`createPRFWallet`, `unlockPasswordWallet`) support optional encrypted storage.
+- `@web2bridge/react` — `Web2BridgeProvider` detects WebAuthn PRF on mount using `isPRFSupported()`. The `useWeb2Bridge()` hook exposes `authenticate()`, `login()`, `lockWallet()`, `logout()`, and wallet/auth state.
 - `@web2bridge/auth-clerk` — `ClerkAdapter` wraps `@clerk/clerk-js`. Uses `openSignIn()` with 200ms polling for auth completion.
+- `packages/core/src/crypto/webauthn.ts` — SimpleWebAuthn-based WebAuthn/PRF implementation
+- `packages/core/src/crypto/encryption.ts` — ChaCha20-Poly1305 encryption via `@noble/ciphers`
+- `packages/core/src/storage/` — Encrypted wallet storage abstraction with localStorage implementation
+- `packages/core/src/wallet/factory.ts` — Wallet factory for PRF and password paths with optional persistence
 
 ### Gotchas
 
