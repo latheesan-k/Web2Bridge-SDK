@@ -7,7 +7,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 export default defineConfig({
   base: process.env.DEMO_BASE_PATH || '/',
   plugins: [
-    react(), 
+    react(),
     wasm(),
     nodePolyfills({
       include: ['crypto', 'stream', 'events', 'fs', 'path', 'util', 'buffer'],
@@ -15,19 +15,28 @@ export default defineConfig({
         Buffer: true,
         global: true,
         process: true
-      }
+      },
+      protocolImports: true
     })
   ],
   server: {
     port: 3000,
-    host: true
+    host: true,
+    hmr: {
+      host: 'demo.lan.disasm.us',
+      protocol: 'wss',
+      clientPort: 443
+    }
   },
   build: {
     outDir: 'dist',
     sourcemap: false,
     chunkSizeWarningLimit: (5 * 1024),
     rollupOptions: {
-      external: ['argon2-browser'],
+      external: [
+        'argon2-browser',
+        /^vite-plugin-node-polyfills\/shims\//
+      ],
       output: {
         globals: {
           'argon2-browser': 'argon2'
