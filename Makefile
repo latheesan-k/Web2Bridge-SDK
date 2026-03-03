@@ -1,4 +1,4 @@
-.PHONY: code-coverage-report tests install build demo
+.PHONY: code-coverage-report lint tests install build demo
 
 code-coverage-report:
 	@echo "Clearing previous code coverage report..."
@@ -28,6 +28,10 @@ code-coverage-report:
 	@echo "   - code-coverage-report/core-html/         (Core package HTML)"
 	@echo "   - code-coverage-report/react-html/        (React package HTML)"
 	@echo "   - code-coverage-report/auth-clerk-html/   (Auth-clerk package HTML)"
+
+lint:
+	@echo "Running lint..."
+	@pnpm lint
 
 tests:
 	@echo "Running all tests..."

@@ -1,56 +1,37 @@
-import { useState, useCallback } from 'react'
-import { useWeb2Bridge } from '@web2bridge/react'
+import { useMemo } from 'react'
 import { useClerk } from '@clerk/clerk-react'
-import AuthSection from './components/AuthSection'
-import VerifySection from './components/VerifySection'
+import { Web2BridgeProvider } from '@web2bridge/react'
+import { ClerkAdapter } from '@web2bridge/auth-clerk'
+import AppContent from './AppContent'
 
-function App() {
-  const { isAuthenticated, logout, lockWallet } = useWeb2Bridge()
+interface AppProps {
+  clerkKey: string
+  networkId: 0 | 1
+  appDomain: string
+}
+
+function App({ networkId, appDomain }: AppProps) {
   const clerk = useClerk()
-  const [pendingCbor, setPendingCbor] = useState<string | null>(null)
-  const [walletIssued, setWalletIssued] = useState(false)
 
-  const handleLogout = async () => {
-    lockWallet()
-    setWalletIssued(false)
-    setPendingCbor(null)
-    await logout()
-    await clerk.signOut()
-  }
-
-  const handleSignedMessage = useCallback((cbor: string) => {
-    setPendingCbor(cbor)
-  }, [])
+  // Create adapter with the shared Clerk instance from @clerk/clerk-react
+  // This ensures session state is synchronized between Clerk React and the adapter
+  const adapter = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new ClerkAdapter({ clerk: clerk as any })
+  }, [clerk])
 
   return (
-    <>
-      <nav className="nav">
-        <div className="nav-brand">
-          <span>⬡</span> Web2Bridge Demo
-        </div>
-        <div className="nav-right">
-          <span className="badge badge-network">
-            {import.meta.env.VITE_NETWORK_ID === '1' ? 'Mainnet' : 'Preprod'}
-          </span>
-          {isAuthenticated && (
-            <button className="btn-sm btn-danger" onClick={handleLogout}>Sign Out</button>
-          )}
-        </div>
-      </nav>
-
-      <AuthSection onSignedMessage={handleSignedMessage} onWalletIssued={() => setWalletIssued(true)} />
-
-      {isAuthenticated && walletIssued && (
-        <>
-          <div className="flow-connector">↓</div>
-          <VerifySection pendingCbor={pendingCbor} onConsumed={() => setPendingCbor(null)} />
-        </>
-      )}
-
-      <footer className="footer">
-        Powered by <a href="https://github.com/latheesan-k/Web2Bridge-SDK" target="_blank" rel="noopener">Web2Bridge SDK</a>
-      </footer>
-    </>
+    <Web2BridgeProvider
+      adapter={adapter}
+      config={{
+        appDomain,
+        networkId,
+        kdf: 'hkdf',
+        fallback: { enabled: true, kdf: 'pbkdf2' },
+      }}
+    >
+      <AppContent />
+    </Web2BridgeProvider>
   )
 }
 

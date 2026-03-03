@@ -77,12 +77,14 @@ The SDK is split into three packages with strict dependency boundaries. Auth ven
   │                     @web2bridge/core                         │
   │                                                              │
   │  auth/        AuthAdapter interface, Result<T>, namespacing  │
-  │  crypto/      PRF detection, HKDF, PBKDF2, Argon2id          │
+  │  crypto/      WebAuthn PRF, KDF, ChaCha20-Poly1305 encryption │
   │  derivation/  BIP39 mnemonic, AppID, HD path                 │
-  │  wallet/      Web2BridgeWallet (CIP-30 via MeshWallet)       │
+  │  wallet/      Web2BridgeWallet, wallet factory               │
+  │  storage/     Encrypted wallet persistence (localStorage)    │
   │  errors.ts    Typed error hierarchy                          │
   │                                                              │
-  │  External deps: @meshsdk/core, Web Crypto API, WebAuthn API  │
+  │  External deps: @meshsdk/core, @simplewebauthn/browser,      │
+  │                 @noble/ciphers, Web Crypto API               │
   └──────────────────────────────────────────────────────────────┘
 ```
 

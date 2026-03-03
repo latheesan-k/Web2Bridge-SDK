@@ -1,441 +1,508 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web2Bridge SDK — Web2 UX meets Web3 Self-Custody</title>
-  <meta name="description" content="Zero-storage, stateless, client-side SDK that bridges Web2 User Experience with Web3 Self-Custody on Cardano." />
+  <meta name="description"
+    content="Zero-storage, stateless, client-side SDK that bridges Web2 User Experience with Web3 Self-Custody on Cardano." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<!-- ─── Navigation ────────────────────────────────────────────────────────── -->
-<nav id="nav">
-  <div class="nav-inner">
-    <a href="#hero" class="nav-logo">
-      <span class="logo-icon">⬡</span> Web2Bridge
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu" onclick="document.getElementById('nav').classList.toggle('open')">
-      <span></span><span></span><span></span>
-    </button>
-    <ul class="nav-links">
-      <li><a href="#how-it-works">How It Works</a></li>
-      <li><a href="#why">Why Web2Bridge</a></li>
-      <li><a href="#use-cases">Use Cases</a></li>
-      <li><a href="#tech-stack">Tech Stack</a></li>
-      <li><a href="#docs">Documentation</a></li>
-      <li><a href="#faq">FAQ</a></li>
-      <li><a href="demo/" class="btn btn-sm btn-outline">Live Demo</a></li>
-      <li><a href="https://github.com/latheesan-k/Web2Bridge-SDK" class="btn btn-sm" target="_blank" rel="noopener">GitHub</a></li>
-    </ul>
-  </div>
-</nav>
-
-<!-- ─── Hero ──────────────────────────────────────────────────────────────── -->
-<section id="hero" class="hero">
-  <div class="hero-bg"></div>
-  <div class="container hero-content">
-    <div class="badge">Open Source &middot; Cardano &middot; TypeScript</div>
-    <h1>Web2 UX meets<br/><span class="gradient-text">Web3 Self-Custody</span></h1>
-    <p class="hero-sub">
-      A zero-storage, stateless SDK that lets users log in with Google or Apple and
-      instantly get a deterministic, self-custodial Cardano wallet &mdash; no seed phrases, no servers, no databases.
-    </p>
-    <div class="hero-actions">
-      <a href="#docs" class="btn btn-primary">Get Started</a>
-      <a href="#how-it-works" class="btn btn-outline">Learn More</a>
-      <a href="demo/" class="btn btn-outline btn-demo">Try Live Demo &rarr;</a>
+  <!-- ─── Navigation ────────────────────────────────────────────────────────── -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <span class="logo-icon">⬡</span> Web2Bridge
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu"
+        onclick="document.getElementById('nav').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#why">Why Web2Bridge</a></li>
+        <li><a href="#use-cases">Use Cases</a></li>
+        <li><a href="#tech-stack">Tech Stack</a></li>
+        <li><a href="#docs">Documentation</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="demo/" class="btn btn-sm btn-outline">Live Demo</a></li>
+        <li><a href="https://github.com/latheesan-k/Web2Bridge-SDK" class="btn btn-sm" target="_blank"
+            rel="noopener">GitHub</a></li>
+      </ul>
     </div>
-    <div class="hero-stats">
-      <div class="stat">
-        <strong>Zero</strong>
-        <span>Storage Required</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <strong>100%</strong>
-        <span>Client-Side</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <strong>CIP-30</strong>
-        <span>Compatible</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <strong>BIP39</strong>
-        <span>Standard Wallets</span>
-      </div>
-    </div>
-  </div>
-</section>
+  </nav>
 
-<!-- ─── Value Props ───────────────────────────────────────────────────────── -->
-<section class="value-props">
-  <div class="container">
-    <div class="props-grid">
-      <div class="prop-card">
-        <div class="prop-icon">🔐</div>
-        <h3>Un-hackable Entropy</h3>
-        <p>Primary entropy from WebAuthn PRF &mdash; hardware-backed passkeys that never leave the device. Password fallback for older devices.</p>
+  <!-- ─── Hero ──────────────────────────────────────────────────────────────── -->
+  <section id="hero" class="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-content">
+      <div class="badge">Open Source &middot; Cardano &middot; TypeScript</div>
+      <h1>Web2 UX meets<br /><span class="gradient-text">Web3 Self-Custody</span></h1>
+      <p class="hero-sub">
+        A zero-storage, stateless SDK that lets users log in with Google or Apple and
+        instantly get a deterministic, self-custodial Cardano wallet &mdash; no seed phrases, no servers, no databases.
+      </p>
+      <div class="hero-actions">
+        <a href="#docs" class="btn btn-primary">Get Started</a>
+        <a href="#how-it-works" class="btn btn-outline">Learn More</a>
+        <a href="demo/" class="btn btn-outline btn-demo">Try Live Demo &rarr;</a>
       </div>
-      <div class="prop-card">
-        <div class="prop-icon">🏗️</div>
-        <h3>Zero Infrastructure</h3>
-        <p>No central database, no key-management servers, no backend. Everything runs in the user's browser.</p>
-      </div>
-      <div class="prop-card">
-        <div class="prop-icon">🔌</div>
-        <h3>Provider-Agnostic</h3>
-        <p>Ships with Clerk adapter. Plug in Auth0, WorkOS, Supabase, or any provider by implementing one interface.</p>
-      </div>
-      <div class="prop-card">
-        <div class="prop-icon">✨</div>
-        <h3>Web2 Experience</h3>
-        <p>Users log in with Google/Apple, authenticate with FaceID/TouchID, and instantly have a Cardano wallet. No seed phrases during onboarding.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── How It Works ──────────────────────────────────────────────────────── -->
-<section id="how-it-works" class="section">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-badge">Architecture</div>
-      <h2>How It Works</h2>
-      <p>Web2Bridge acts as a <strong>Stateless Cryptographic Router</strong> with two entropy paths that deterministically generate a wallet from a user's identity.</p>
-    </div>
-
-    <div class="flow-diagram">
-      <div class="flow-step">
-        <div class="flow-number">1</div>
-        <div class="flow-content">
-          <h4>Social Login</h4>
-          <p>User signs in with Google, Apple, GitHub, etc. via your chosen auth provider. The SDK receives a stable, namespaced user ID.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <strong>Zero</strong>
+          <span>Storage Required</span>
         </div>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">
-        <div class="flow-number">2</div>
-        <div class="flow-content">
-          <h4>Entropy Generation</h4>
-          <p>The SDK uses WebAuthn PRF (hardware passkeys) to derive 32 bytes of deterministic entropy &mdash; or falls back to a spending password on unsupported devices.</p>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <strong>100%</strong>
+          <span>Client-Side</span>
         </div>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">
-        <div class="flow-number">3</div>
-        <div class="flow-content">
-          <h4>Wallet Derivation</h4>
-          <p>Entropy is fed through HKDF-SHA-256, converted to a BIP39 24-word mnemonic, and used to create an HD wallet at an app-isolated derivation path.</p>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <strong>CIP-30</strong>
+          <span>Compatible</span>
         </div>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">
-        <div class="flow-number">4</div>
-        <div class="flow-content">
-          <h4>Ready to Sign</h4>
-          <p>A CIP-30 compatible Cardano wallet lives in browser memory for signing transactions. Nothing is ever stored or transmitted.</p>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <strong>BIP39</strong>
+          <span>Standard Wallets</span>
         </div>
       </div>
     </div>
+  </section>
 
-    <div class="paths-grid">
-      <div class="path-card primary">
-        <div class="path-badge">Primary Path</div>
-        <h3>WebAuthn PRF</h3>
-        <p>Hardware-backed passkeys (FaceID, TouchID, YubiKey) generate deterministic entropy via the PRF extension. The private key never leaves the secure enclave.</p>
-        <ul>
-          <li>iOS 18+ / Safari 18+</li>
-          <li>Android 14+ / Chrome 130+</li>
-          <li>macOS Sequoia / Chrome 128+</li>
-          <li>Hardware security keys (YubiKey 5, Titan M2)</li>
-        </ul>
-      </div>
-      <div class="path-card fallback">
-        <div class="path-badge">Fallback Path</div>
-        <h3>Password-Derived</h3>
-        <p>When PRF is unavailable, the user provides a spending password. Entropy is derived via Argon2id (64 MB, 3 iterations) or PBKDF2 — same deterministic result every time.</p>
-        <ul>
-          <li>Works on any modern browser</li>
-          <li>Password strength enforced (zxcvbn ≥ 3)</li>
-          <li>Password is never stored</li>
-          <li>Required on every login to re-derive</li>
-        </ul>
+  <!-- ─── Value Props ───────────────────────────────────────────────────────── -->
+  <section class="value-props">
+    <div class="container">
+      <div class="props-grid">
+        <div class="prop-card">
+          <div class="prop-icon">🔐</div>
+          <h3>Un-hackable Entropy</h3>
+          <p>Primary entropy from WebAuthn PRF &mdash; hardware-backed passkeys that never leave the device. Password
+            fallback for older devices.</p>
+        </div>
+        <div class="prop-card">
+          <div class="prop-icon">🏗️</div>
+          <h3>Zero Infrastructure</h3>
+          <p>No central database, no key-management servers, no backend. Everything runs in the user's browser.</p>
+        </div>
+        <div class="prop-card">
+          <div class="prop-icon">🔌</div>
+          <h3>Provider-Agnostic</h3>
+          <p>Ships with Clerk adapter. Plug in Auth0, WorkOS, Supabase, or any provider by implementing one interface.
+          </p>
+        </div>
+        <div class="prop-card">
+          <div class="prop-icon">✨</div>
+          <h3>Web2 Experience</h3>
+          <p>Users log in with Google/Apple, authenticate with FaceID/TouchID, and instantly have a Cardano wallet. No
+            seed phrases during onboarding.</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ─── Why Web2Bridge ────────────────────────────────────────────────────── -->
-<section id="why" class="section section-alt">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-badge">Benefits</div>
-      <h2>Why Web2Bridge</h2>
-      <p>Traditional wallets force users through a hostile onboarding flow. Web2Bridge eliminates every friction point while maintaining true self-custody.</p>
-    </div>
+  <!-- ─── How It Works ──────────────────────────────────────────────────────── -->
+  <section id="how-it-works" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">Architecture</div>
+        <h2>How It Works</h2>
+        <p>Web2Bridge acts as a <strong>Stateless Cryptographic Router</strong> with two entropy paths that
+          deterministically generate a wallet from a user's identity.</p>
+      </div>
 
-    <div class="comparison">
-      <div class="comparison-col bad">
-        <h4>Traditional Web3 Onboarding</h4>
-        <ul>
-          <li>❌ Install browser extension</li>
-          <li>❌ Write down 24 words on paper</li>
-          <li>❌ Verify seed phrase</li>
-          <li>❌ Fund wallet with native token</li>
-          <li>❌ Approve connection to dApp</li>
-          <li>❌ User lost → user gone</li>
-        </ul>
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-number">1</div>
+          <div class="flow-content">
+            <h4>Social Login</h4>
+            <p>User signs in with Google, Apple, GitHub, etc. via your chosen auth provider. The SDK receives a stable,
+              namespaced user ID.</p>
+          </div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-number">2</div>
+          <div class="flow-content">
+            <h4>Entropy Generation</h4>
+            <p>The SDK uses WebAuthn PRF (hardware passkeys) to derive 32 bytes of deterministic entropy &mdash; or
+              falls back to a spending password on unsupported devices.</p>
+          </div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-number">3</div>
+          <div class="flow-content">
+            <h4>Wallet Derivation</h4>
+            <p>Entropy is fed through HKDF-SHA-256, converted to a BIP39 24-word mnemonic, and used to create an HD
+              wallet at an app-isolated derivation path.</p>
+          </div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-number">4</div>
+          <div class="flow-content">
+            <h4>Ready to Sign</h4>
+            <p>A CIP-30 compatible Cardano wallet lives in browser memory for signing transactions. Nothing is ever
+              stored or transmitted.</p>
+          </div>
+        </div>
       </div>
-      <div class="comparison-col good">
-        <h4>Web2Bridge Onboarding</h4>
-        <ul>
-          <li>✅ Click "Sign in with Google"</li>
-          <li>✅ Tap FaceID / TouchID</li>
-          <li>✅ Wallet ready. Done.</li>
-          <li>✅ Same wallet every time</li>
-          <li>✅ Recovery phrase exportable anytime</li>
-          <li>✅ User retained → user happy</li>
-        </ul>
-      </div>
-    </div>
 
-    <div class="features-grid">
-      <div class="feature">
-        <div class="feature-icon">🧮</div>
-        <h4>Deterministic</h4>
-        <p>Same user + same device = same wallet, every single time. No state to lose.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🏝️</div>
-        <h4>App-Isolated</h4>
-        <p>Each dApp gets its own HD derivation path (<code>m/1852'/1815'/AppID'/0/0</code>). Your users' wallets are unique to your app.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔀</div>
-        <h4>Provider-Agnostic</h4>
-        <p>Swap Clerk for Auth0 or any provider by changing one import. Your wallet logic stays untouched.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🛡️</div>
-        <h4>Self-Custodial</h4>
-        <p>No server ever sees a private key. Users can export their BIP39 recovery phrase and import into any standard Cardano wallet.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📦</div>
-        <h4>Tiny Footprint</h4>
-        <p>Three tree-shakeable packages: <code>core</code>, <code>react</code>, and your auth adapter. No heavy dependencies.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🧪</div>
-        <h4>Battle-Tested</h4>
-        <p>Property-based tests via fast-check, 150+ unit tests, and full BIP39 compliance against the official wordlist.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── Use Cases ─────────────────────────────────────────────────────────── -->
-<section id="use-cases" class="section">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-badge">Applications</div>
-      <h2>Use Cases</h2>
-      <p>Web2Bridge unlocks Web3 for products where users shouldn't need to know they're using a blockchain.</p>
-    </div>
-
-    <div class="usecases-grid">
-      <div class="usecase-card">
-        <div class="usecase-icon">🎮</div>
-        <h3>Gaming</h3>
-        <p>Players sign in with their existing social account and instantly own NFT game assets in a self-custodial wallet — no extension installs, no seed phrases.</p>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-icon">🎫</div>
-        <h3>Event Ticketing</h3>
-        <p>Issue NFT tickets that attendees receive by simply logging in with Google. Verifiable, transferable, and no crypto knowledge required.</p>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-icon">🏛️</div>
-        <h3>DAO Governance</h3>
-        <p>Let community members vote on proposals with a wallet they get by signing in. Lower the barrier from "install MetaMask" to "click Sign In."</p>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-icon">🎨</div>
-        <h3>Digital Collectibles</h3>
-        <p>Art platforms can let collectors own their purchases on-chain without exposing blockchain complexity. Sign in, collect, done.</p>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-icon">💳</div>
-        <h3>Loyalty & Rewards</h3>
-        <p>Issue on-chain loyalty tokens to customers who already have a social login. No new account, no new app, no friction.</p>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-icon">🏥</div>
-        <h3>Credentialing</h3>
-        <p>Issue verifiable credentials (certificates, badges, licenses) as on-chain attestations tied to a user's social identity.</p>
+      <div class="paths-grid">
+        <div class="path-card primary">
+          <div class="path-badge">Primary Path</div>
+          <h3>WebAuthn PRF</h3>
+          <p>Hardware-backed passkeys (FaceID, TouchID, YubiKey) generate deterministic entropy via the PRF extension.
+            The private key never leaves the secure enclave.</p>
+          <ul>
+            <li>iOS 18+ / Safari 18+</li>
+            <li>Android 14+ / Chrome 116+</li>
+            <li>macOS Sonoma 14+ / Chrome 116+ / Safari 18+</li>
+            <li>Hardware security keys (YubiKey 5, Titan M2)</li>
+          </ul>
+        </div>
+        <div class="path-card fallback">
+          <div class="path-badge">Fallback Path</div>
+          <h3>Password-Derived</h3>
+          <p>When PRF is unavailable, the user provides a spending password. Entropy is derived via Argon2id (64 MB, 3
+            iterations) or PBKDF2 — same deterministic result every time.</p>
+          <ul>
+            <li>Works on any modern browser</li>
+            <li>Password strength enforced (zxcvbn ≥ 3)</li>
+            <li>Password is never stored</li>
+            <li>Required on every login to re-derive</li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ─── Tech Stack ────────────────────────────────────────────────────────── -->
-<section id="tech-stack" class="section section-alt">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-badge">Tech Stack</div>
-      <h2>Built With</h2>
-      <p>Web2Bridge is built on top of battle-tested, industry-standard frameworks, libraries, and protocols.</p>
-    </div>
-
-    <div class="tech-grid">
-      <div class="tech-card">
-        <div class="tech-logo">
-          <svg viewBox="0 0 128 128" width="40" height="40"><path fill="#007acc" d="M2 63.91v62.5h125v-125H2zm100.73-5.01h-12v45.58c0 5.1.09 8.59-.53 10.6a8.46 8.46 0 01-4.37 5 15.09 15.09 0 01-6.8 1.59 15.17 15.17 0 01-8.3-2.06l2.68-6.63a8.68 8.68 0 004.9 1.63 4.3 4.3 0 003.56-1.4 8.18 8.18 0 001-4.8V58.9h19.82zm16.33 46.33a22.6 22.6 0 01-10.87-2.58 17.47 17.47 0 01-7.27-7.3 21.87 21.87 0 01-2.58-10.73 22.84 22.84 0 012.68-11.08 18.77 18.77 0 017.58-7.5 22.82 22.82 0 0111.18-2.68 27.05 27.05 0 018.58 1.38 17.06 17.06 0 016.5 4.3l-5 5.88a12.27 12.27 0 00-4.2-3.08 13.08 13.08 0 00-5.68-1.18 11.3 11.3 0 00-5.78 1.48 10.15 10.15 0 00-3.88 4.27 14.57 14.57 0 00-1.38 6.58 14.1 14.1 0 001.38 6.38 10.38 10.38 0 003.98 4.37 11.18 11.18 0 005.68 1.48 12.88 12.88 0 005.78-1.28 12.77 12.77 0 004.18-3.28l5.08 5.58a18.67 18.67 0 01-6.88 4.87 23.12 23.12 0 01-9.08 1.62z"/></svg>
-        </div>
-        <div class="tech-info">
-          <h4>TypeScript</h4>
-          <span class="tech-category">Language</span>
-        </div>
-        <p>Strict mode throughout. Full type safety across all packages with zero <code>any</code> types.</p>
+  <!-- ─── Why Web2Bridge ────────────────────────────────────────────────────── -->
+  <section id="why" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">Benefits</div>
+        <h2>Why Web2Bridge</h2>
+        <p>Traditional wallets force users through a hostile onboarding flow. Web2Bridge eliminates every friction point
+          while maintaining true self-custody.</p>
       </div>
 
-      <div class="tech-card">
-        <div class="tech-logo">
-          <svg viewBox="0 0 128 128" width="40" height="40"><path d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm32.7 114.4L48.4 41.8h-6.8v44.4h5.6V49.9l44.2 65.4c-8.3 4.9-17.9 7.7-28.2 7.7-30.9 0-55.8-25-55.8-55.8S32.3 11.4 63.2 11.4s55.8 25 55.8 55.8c0 18.5-9 34.9-22.8 45z" fill="#fff"/></svg>
+      <div class="comparison">
+        <div class="comparison-col bad">
+          <h4>Traditional Web3 Onboarding</h4>
+          <ul>
+            <li>❌ Install browser extension</li>
+            <li>❌ Write down 24 words on paper</li>
+            <li>❌ Verify seed phrase</li>
+            <li>❌ Fund wallet with native token</li>
+            <li>❌ Approve connection to dApp</li>
+            <li>❌ User lost → user gone</li>
+          </ul>
         </div>
-        <div class="tech-info">
-          <h4>React 18</h4>
-          <span class="tech-category">UI Framework</span>
+        <div class="comparison-col good">
+          <h4>Web2Bridge Onboarding</h4>
+          <ul>
+            <li>✅ Click "Sign in with Google"</li>
+            <li>✅ Tap FaceID / TouchID</li>
+            <li>✅ Wallet ready. Done.</li>
+            <li>✅ Same wallet every time</li>
+            <li>✅ Recovery phrase exportable anytime</li>
+            <li>✅ User retained → user happy</li>
+          </ul>
         </div>
-        <p>Provider pattern + hooks for seamless state management. Context-driven wallet lifecycle.</p>
       </div>
 
-      <div class="tech-card">
-        <div class="tech-logo">
-          <svg viewBox="0 0 128 128" width="40" height="40"><path d="M64 0l55.4 32v64L64 128 8.6 96V32z" fill="#306998"/><path d="M64 0l55.4 32v64L64 128V0z" fill="#ffd43b"/><text x="50%" y="56%" text-anchor="middle" fill="#fff" font-size="48" font-weight="bold" font-family="sans-serif" dy=".35em">M</text></svg>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">🧮</div>
+          <h4>Deterministic</h4>
+          <p>Same user + same device = same wallet, every single time. No state to lose.</p>
         </div>
-        <div class="tech-info">
-          <h4>Mesh SDK</h4>
-          <span class="tech-category">Cardano SDK</span>
+        <div class="feature">
+          <div class="feature-icon">🏝️</div>
+          <h4>App-Isolated</h4>
+          <p>Each dApp gets its own HD derivation path (<code>m/1852'/1815'/AppID'/0/0</code>). Your users' wallets are
+            unique to your app.</p>
         </div>
-        <p>CIP-30 wallet interface via <code>@meshsdk/core</code>. HD key derivation, transaction signing, and data signing.</p>
-      </div>
-
-      <div class="tech-card">
-        <div class="tech-logo">
-          <svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="18" fill="none" stroke="#6c63ff" stroke-width="2"/><path d="M14 14h12v12H14z" fill="#6c63ff" opacity=".3"/><path d="M20 8v24M8 20h24" stroke="#6c63ff" stroke-width="1.5"/></svg>
+        <div class="feature">
+          <div class="feature-icon">🔀</div>
+          <h4>Provider-Agnostic</h4>
+          <p>Swap Clerk for Auth0 or any provider by changing one import. Your wallet logic stays untouched.</p>
         </div>
-        <div class="tech-info">
-          <h4>Clerk</h4>
-          <span class="tech-category">Authentication</span>
+        <div class="feature">
+          <div class="feature-icon">🛡️</div>
+          <h4>Self-Custodial</h4>
+          <p>No server ever sees a private key. Users can export their BIP39 recovery phrase and import into any
+            standard Cardano wallet.</p>
         </div>
-        <p>First-party auth adapter. Google OAuth, social logins, session management via <code>@clerk/clerk-js</code>.</p>
-      </div>
-
-      <div class="tech-card">
-        <div class="tech-logo">
-          <svg viewBox="0 0 40 40" width="40" height="40"><rect x="4" y="4" width="32" height="32" rx="6" fill="none" stroke="#00cec9" stroke-width="2"/><path d="M12 20h16M20 12v16" stroke="#00cec9" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="14" r="2" fill="#00cec9"/><circle cx="28" cy="26" r="2" fill="#00cec9"/></svg>
+        <div class="feature">
+          <div class="feature-icon">📦</div>
+          <h4>Tiny Footprint</h4>
+          <p>Three tree-shakeable packages: <code>core</code>, <code>react</code>, and your auth adapter. No heavy
+            dependencies.</p>
         </div>
-        <div class="tech-info">
-          <h4>Web Crypto API</h4>
-          <span class="tech-category">Cryptography</span>
+        <div class="feature">
+          <div class="feature-icon">🧪</div>
+          <h4>Battle-Tested</h4>
+          <p>Property-based tests via fast-check, 150+ unit tests, and full BIP39 compliance against the official
+            wordlist.</p>
         </div>
-        <p>HKDF-SHA-256 and PBKDF2 via browser-native FIPS-validated implementations. Zero custom crypto.</p>
-      </div>
-
-      <div class="tech-card">
-        <div class="tech-logo">
-          <svg viewBox="0 0 40 40" width="40" height="40"><rect x="4" y="4" width="32" height="32" rx="6" fill="none" stroke="#f78c6c" stroke-width="2"/><path d="M14 28V16l6 8 6-8v12" stroke="#f78c6c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="tech-info">
-          <h4>WebAuthn PRF</h4>
-          <span class="tech-category">Hardware Security</span>
-        </div>
-        <p>Passkey-based entropy via the PRF extension. FaceID, TouchID, YubiKey &mdash; phishing-resistant by design.</p>
-      </div>
-
-      <div class="tech-card">
-        <div class="tech-logo">
-          <svg viewBox="0 0 40 40" width="40" height="40"><rect x="4" y="4" width="32" height="32" rx="6" fill="none" stroke="#c792ea" stroke-width="2"/><text x="50%" y="54%" text-anchor="middle" fill="#c792ea" font-size="16" font-weight="bold" font-family="monospace" dy=".35em">A2</text></svg>
-        </div>
-        <div class="tech-info">
-          <h4>Argon2id</h4>
-          <span class="tech-category">Key Derivation</span>
-        </div>
-        <p>Memory-hard KDF (64 MB, 3 iterations) for password fallback. GPU/ASIC-resistant via WASM.</p>
-      </div>
-
-      <div class="tech-card">
-        <div class="tech-logo">
-          <svg viewBox="0 0 40 40" width="40" height="40"><rect x="4" y="4" width="32" height="32" rx="6" fill="none" stroke="#fdcb6e" stroke-width="2"/><text x="50%" y="54%" text-anchor="middle" fill="#fdcb6e" font-size="11" font-weight="bold" font-family="monospace" dy=".35em">BIP</text></svg>
-        </div>
-        <div class="tech-info">
-          <h4>BIP39 / BIP32</h4>
-          <span class="tech-category">Wallet Standard</span>
-        </div>
-        <p>24-word mnemonic generation + HD derivation at <code>m/1852'/1815'/AppID'/0/0</code>. Importable into any Cardano wallet.</p>
       </div>
     </div>
+  </section>
 
-    <div class="tech-cta">
-      <a href="demo/" class="btn btn-primary">Try the Live Demo &rarr;</a>
-      <p>See these technologies working together in a real application.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ─── Documentation ─────────────────────────────────────────────────────── -->
-<section id="docs" class="section">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-badge">Documentation</div>
-      <h2>Get Started with React + Clerk</h2>
-      <p>Integrate Web2Bridge into your React app in under 5 minutes. More auth provider adapters coming soon.</p>
-    </div>
-
-    <div class="docs-adapters">
-      <div class="adapter-pill active">Clerk <span class="adapter-status">Available</span></div>
-      <div class="adapter-pill">Auth0 <span class="adapter-status soon">Soon</span></div>
-      <div class="adapter-pill">WorkOS <span class="adapter-status soon">Soon</span></div>
-      <div class="adapter-pill">Supabase <span class="adapter-status soon">Soon</span></div>
-      <div class="adapter-pill">Firebase <span class="adapter-status soon">Soon</span></div>
-    </div>
-
-    <!-- Step 1 -->
-    <div class="doc-step">
-      <div class="doc-step-header">
-        <span class="doc-step-num">1</span>
-        <h3>Install Packages</h3>
+  <!-- ─── Use Cases ─────────────────────────────────────────────────────────── -->
+  <section id="use-cases" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">Applications</div>
+        <h2>Use Cases</h2>
+        <p>Web2Bridge unlocks Web3 for products where users shouldn't need to know they're using a blockchain.</p>
       </div>
-      <p>Install the three Web2Bridge packages alongside Clerk's React SDK:</p>
-      <div class="code-block">
-        <div class="code-header"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><code>npm install @web2bridge/core @web2bridge/react @web2bridge/auth-clerk @clerk/clerk-react</code></pre>
-      </div>
-      <div class="doc-note">
-        <strong>Package overview:</strong>
-        <code>@web2bridge/core</code> — cryptography, derivation, wallet wrapper (zero vendor deps).<br/>
-        <code>@web2bridge/react</code> — React provider + hook.<br/>
-        <code>@web2bridge/auth-clerk</code> — Clerk adapter implementing the <code>AuthAdapter</code> interface.
+
+      <div class="usecases-grid">
+        <div class="usecase-card">
+          <div class="usecase-icon">🎮</div>
+          <h3>Gaming</h3>
+          <p>Players sign in with their existing social account and instantly own NFT game assets in a self-custodial
+            wallet — no extension installs, no seed phrases.</p>
+        </div>
+        <div class="usecase-card">
+          <div class="usecase-icon">🎫</div>
+          <h3>Event Ticketing</h3>
+          <p>Issue NFT tickets that attendees receive by simply logging in with Google. Verifiable, transferable, and no
+            crypto knowledge required.</p>
+        </div>
+        <div class="usecase-card">
+          <div class="usecase-icon">🏛️</div>
+          <h3>DAO Governance</h3>
+          <p>Let community members vote on proposals with a wallet they get by signing in. Lower the barrier from
+            "install MetaMask" to "click Sign In."</p>
+        </div>
+        <div class="usecase-card">
+          <div class="usecase-icon">🎨</div>
+          <h3>Digital Collectibles</h3>
+          <p>Art platforms can let collectors own their purchases on-chain without exposing blockchain complexity. Sign
+            in, collect, done.</p>
+        </div>
+        <div class="usecase-card">
+          <div class="usecase-icon">💳</div>
+          <h3>Loyalty & Rewards</h3>
+          <p>Issue on-chain loyalty tokens to customers who already have a social login. No new account, no new app, no
+            friction.</p>
+        </div>
+        <div class="usecase-card">
+          <div class="usecase-icon">🏥</div>
+          <h3>Credentialing</h3>
+          <p>Issue verifiable credentials (certificates, badges, licenses) as on-chain attestations tied to a user's
+            social identity.</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- Step 2 -->
-    <div class="doc-step">
-      <div class="doc-step-header">
-        <span class="doc-step-num">2</span>
-        <h3>Configure the Provider</h3>
+  <!-- ─── Tech Stack ────────────────────────────────────────────────────────── -->
+  <section id="tech-stack" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">Tech Stack</div>
+        <h2>Built With</h2>
+        <p>Web2Bridge is built on top of battle-tested, industry-standard frameworks, libraries, and protocols.</p>
       </div>
-      <p>Wrap your app with <code>ClerkProvider</code> and <code>Web2BridgeProvider</code>. The SDK accepts an <code>AuthAdapter</code> instance — swap providers by changing one import.</p>
-      <div class="code-block">
-        <div class="code-header"><span>main.tsx</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><code><span class="kw">import</span> { ClerkProvider } <span class="kw">from</span> <span class="str">"@clerk/clerk-react"</span>;
+
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-logo">
+            <svg viewBox="0 0 128 128" width="40" height="40">
+              <path fill="#007acc"
+                d="M2 63.91v62.5h125v-125H2zm100.73-5.01h-12v45.58c0 5.1.09 8.59-.53 10.6a8.46 8.46 0 01-4.37 5 15.09 15.09 0 01-6.8 1.59 15.17 15.17 0 01-8.3-2.06l2.68-6.63a8.68 8.68 0 004.9 1.63 4.3 4.3 0 003.56-1.4 8.18 8.18 0 001-4.8V58.9h19.82zm16.33 46.33a22.6 22.6 0 01-10.87-2.58 17.47 17.47 0 01-7.27-7.3 21.87 21.87 0 01-2.58-10.73 22.84 22.84 0 012.68-11.08 18.77 18.77 0 017.58-7.5 22.82 22.82 0 0111.18-2.68 27.05 27.05 0 018.58 1.38 17.06 17.06 0 016.5 4.3l-5 5.88a12.27 12.27 0 00-4.2-3.08 13.08 13.08 0 00-5.68-1.18 11.3 11.3 0 00-5.78 1.48 10.15 10.15 0 00-3.88 4.27 14.57 14.57 0 00-1.38 6.58 14.1 14.1 0 001.38 6.38 10.38 10.38 0 003.98 4.37 11.18 11.18 0 005.68 1.48 12.88 12.88 0 005.78-1.28 12.77 12.77 0 004.18-3.28l5.08 5.58a18.67 18.67 0 01-6.88 4.87 23.12 23.12 0 01-9.08 1.62z" />
+            </svg>
+          </div>
+          <div class="tech-info">
+            <h4>TypeScript</h4>
+            <span class="tech-category">Language</span>
+          </div>
+          <p>Strict mode throughout. Full type safety across all packages with zero <code>any</code> types.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-logo">
+            <svg viewBox="0 0 128 128" width="40" height="40">
+              <path
+                d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm32.7 114.4L48.4 41.8h-6.8v44.4h5.6V49.9l44.2 65.4c-8.3 4.9-17.9 7.7-28.2 7.7-30.9 0-55.8-25-55.8-55.8S32.3 11.4 63.2 11.4s55.8 25 55.8 55.8c0 18.5-9 34.9-22.8 45z"
+                fill="#fff" />
+            </svg>
+          </div>
+          <div class="tech-info">
+            <h4>React 18</h4>
+            <span class="tech-category">UI Framework</span>
+          </div>
+          <p>Provider pattern + hooks for seamless state management. Context-driven wallet lifecycle.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-logo">
+            <svg viewBox="0 0 128 128" width="40" height="40">
+              <path d="M64 0l55.4 32v64L64 128 8.6 96V32z" fill="#306998" />
+              <path d="M64 0l55.4 32v64L64 128V0z" fill="#ffd43b" /><text x="50%" y="56%" text-anchor="middle"
+                fill="#fff" font-size="48" font-weight="bold" font-family="sans-serif" dy=".35em">M</text>
+            </svg>
+          </div>
+          <div class="tech-info">
+            <h4>Mesh SDK</h4>
+            <span class="tech-category">Cardano SDK</span>
+          </div>
+          <p>CIP-30 wallet interface via <code>@meshsdk/core</code>. HD key derivation, transaction signing, and data
+            signing.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-logo">
+            <svg viewBox="0 0 40 40" width="40" height="40">
+              <circle cx="20" cy="20" r="18" fill="none" stroke="#6c63ff" stroke-width="2" />
+              <path d="M14 14h12v12H14z" fill="#6c63ff" opacity=".3" />
+              <path d="M20 8v24M8 20h24" stroke="#6c63ff" stroke-width="1.5" />
+            </svg>
+          </div>
+          <div class="tech-info">
+            <h4>Clerk</h4>
+            <span class="tech-category">Authentication</span>
+          </div>
+          <p>First-party auth adapter. Google OAuth, social logins, session management via <code>@clerk/clerk-js</code>.
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-logo">
+            <svg viewBox="0 0 40 40" width="40" height="40">
+              <rect x="4" y="4" width="32" height="32" rx="6" fill="none" stroke="#00cec9" stroke-width="2" />
+              <path d="M12 20h16M20 12v16" stroke="#00cec9" stroke-width="2" stroke-linecap="round" />
+              <circle cx="12" cy="14" r="2" fill="#00cec9" />
+              <circle cx="28" cy="26" r="2" fill="#00cec9" />
+            </svg>
+          </div>
+          <div class="tech-info">
+            <h4>Web Crypto API</h4>
+            <span class="tech-category">Cryptography</span>
+          </div>
+          <p>HKDF-SHA-256 and PBKDF2 via browser-native FIPS-validated implementations. Zero custom crypto.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-logo">
+            <svg viewBox="0 0 40 40" width="40" height="40">
+              <rect x="4" y="4" width="32" height="32" rx="6" fill="none" stroke="#f78c6c" stroke-width="2" />
+              <path d="M14 28V16l6 8 6-8v12" stroke="#f78c6c" stroke-width="2" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="tech-info">
+            <h4>SimpleWebAuthn</h4>
+            <span class="tech-category">Hardware Security</span>
+          </div>
+          <p>Passkey-based entropy via the PRF extension using SimpleWebAuthn. FaceID, TouchID, YubiKey &mdash;
+            phishing-resistant by design.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-logo">
+            <svg viewBox="0 0 40 40" width="40" height="40">
+              <rect x="4" y="4" width="32" height="32" rx="6" fill="none" stroke="#c792ea" stroke-width="2" /><text
+                x="50%" y="54%" text-anchor="middle" fill="#c792ea" font-size="16" font-weight="bold"
+                font-family="monospace" dy=".35em">A2</text>
+            </svg>
+          </div>
+          <div class="tech-info">
+            <h4>Argon2id</h4>
+            <span class="tech-category">Key Derivation</span>
+          </div>
+          <p>Memory-hard KDF (64 MB, 3 iterations) for password fallback. GPU/ASIC-resistant via WASM.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-logo">
+            <svg viewBox="0 0 40 40" width="40" height="40">
+              <rect x="4" y="4" width="32" height="32" rx="6" fill="none" stroke="#fdcb6e" stroke-width="2" /><text
+                x="50%" y="54%" text-anchor="middle" fill="#fdcb6e" font-size="11" font-weight="bold"
+                font-family="monospace" dy=".35em">BIP</text>
+            </svg>
+          </div>
+          <div class="tech-info">
+            <h4>BIP39 / BIP32</h4>
+            <span class="tech-category">Wallet Standard</span>
+          </div>
+          <p>24-word mnemonic generation + HD derivation at <code>m/1852'/1815'/AppID'/0/0</code>. Importable into any
+            Cardano wallet.</p>
+        </div>
+      </div>
+
+      <div class="tech-cta">
+        <a href="demo/" class="btn btn-primary">Try the Live Demo &rarr;</a>
+        <p>See these technologies working together in a real application.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Documentation ─────────────────────────────────────────────────────── -->
+  <section id="docs" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">Documentation</div>
+        <h2>Get Started with React + Clerk</h2>
+        <p>Integrate Web2Bridge into your React app in under 5 minutes. More auth provider adapters coming soon.</p>
+      </div>
+
+      <div class="docs-adapters">
+        <div class="adapter-pill active">Clerk <span class="adapter-status">Available</span></div>
+        <div class="adapter-pill">Auth0 <span class="adapter-status soon">Soon</span></div>
+        <div class="adapter-pill">WorkOS <span class="adapter-status soon">Soon</span></div>
+        <div class="adapter-pill">Supabase <span class="adapter-status soon">Soon</span></div>
+        <div class="adapter-pill">Firebase <span class="adapter-status soon">Soon</span></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="doc-step">
+        <div class="doc-step-header">
+          <span class="doc-step-num">1</span>
+          <h3>Install Packages</h3>
+        </div>
+        <p>Install the three Web2Bridge packages alongside Clerk's React SDK:</p>
+        <div class="code-block">
+          <div class="code-header"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>npm install @web2bridge/core @web2bridge/react @web2bridge/auth-clerk @clerk/clerk-react</code></pre>
+        </div>
+        <div class="doc-note">
+          <strong>Package overview:</strong>
+          <code>@web2bridge/core</code> — cryptography, derivation, wallet wrapper (zero vendor deps).<br />
+          <code>@web2bridge/react</code> — React provider + hook.<br />
+          <code>@web2bridge/auth-clerk</code> — Clerk adapter implementing the <code>AuthAdapter</code> interface.
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="doc-step">
+        <div class="doc-step-header">
+          <span class="doc-step-num">2</span>
+          <h3>Configure the Provider</h3>
+        </div>
+        <p>Wrap your app with <code>ClerkProvider</code> and <code>Web2BridgeProvider</code>. The SDK accepts an
+          <code>AuthAdapter</code> instance — swap providers by changing one import.</p>
+        <div class="code-block">
+          <div class="code-header"><span>main.tsx</span><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { ClerkProvider } <span class="kw">from</span> <span class="str">"@clerk/clerk-react"</span>;
 <span class="kw">import</span> { Web2BridgeProvider } <span class="kw">from</span> <span class="str">"@web2bridge/react"</span>;
 <span class="kw">import</span> { ClerkAdapter } <span class="kw">from</span> <span class="str">"@web2bridge/auth-clerk"</span>;
 
@@ -464,19 +531,21 @@
     <span class="kw">&lt;/</span><span class="fn">ClerkProvider</span><span class="kw">&gt;</span>
   );
 }</code></pre>
+        </div>
       </div>
-    </div>
 
-    <!-- Step 3 -->
-    <div class="doc-step">
-      <div class="doc-step-header">
-        <span class="doc-step-num">3</span>
-        <h3>Use the Hook</h3>
-      </div>
-      <p>The <code>useWeb2Bridge()</code> hook exposes state and actions. All async methods return <code>Result&lt;T&gt;</code> — never throw.</p>
-      <div class="code-block">
-        <div class="code-header"><span>WalletButton.tsx</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><code><span class="kw">import</span> { useWeb2Bridge } <span class="kw">from</span> <span class="str">"@web2bridge/react"</span>;
+      <!-- Step 3 -->
+      <div class="doc-step">
+        <div class="doc-step-header">
+          <span class="doc-step-num">3</span>
+          <h3>Use the Hook</h3>
+        </div>
+        <p>The <code>useWeb2Bridge()</code> hook exposes state and actions. All async methods return
+          <code>Result&lt;T&gt;</code> — never throw.</p>
+        <div class="code-block">
+          <div class="code-header"><span>WalletButton.tsx</span><button class="copy-btn"
+              onclick="copyCode(this)">Copy</button></div>
+          <pre><code><span class="kw">import</span> { useWeb2Bridge } <span class="kw">from</span> <span class="str">"@web2bridge/react"</span>;
 
 <span class="kw">function</span> <span class="fn">WalletButton</span>() {
   <span class="kw">const</span> {
@@ -509,19 +578,21 @@
     <span class="kw">&lt;/</span>div<span class="kw">&gt;</span>
   );
 }</code></pre>
+        </div>
       </div>
-    </div>
 
-    <!-- Step 4 -->
-    <div class="doc-step">
-      <div class="doc-step-header">
-        <span class="doc-step-num">4</span>
-        <h3>Sign Transactions & Data</h3>
-      </div>
-      <p>The <code>wallet</code> object exposes a CIP-30-like interface. All methods return <code>Result&lt;T&gt;</code>.</p>
-      <div class="code-block">
-        <div class="code-header"><span>signing.tsx</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><code><span class="kw">const</span> { wallet } = <span class="fn">useWeb2Bridge</span>();
+      <!-- Step 4 -->
+      <div class="doc-step">
+        <div class="doc-step-header">
+          <span class="doc-step-num">4</span>
+          <h3>Sign Transactions & Data</h3>
+        </div>
+        <p>The <code>wallet</code> object exposes a CIP-30-like interface. All methods return
+          <code>Result&lt;T&gt;</code>.</p>
+        <div class="code-block">
+          <div class="code-header"><span>signing.tsx</span><button class="copy-btn"
+              onclick="copyCode(this)">Copy</button></div>
+          <pre><code><span class="kw">const</span> { wallet } = <span class="fn">useWeb2Bridge</span>();
 
 <span class="cm">// Get wallet addresses</span>
 <span class="kw">const</span> addrs = <span class="kw">await</span> wallet.<span class="fn">getUsedAddresses</span>();
@@ -534,19 +605,21 @@
 <span class="cm">// Sign arbitrary data (CIP-8)</span>
 <span class="kw">const</span> sig = <span class="kw">await</span> wallet.<span class="fn">signData</span>(address, <span class="str">"Hello Cardano!"</span>);
 <span class="cm">// → Result&lt;string&gt;</span></code></pre>
+        </div>
       </div>
-    </div>
 
-    <!-- Step 5 -->
-    <div class="doc-step">
-      <div class="doc-step-header">
-        <span class="doc-step-num">5</span>
-        <h3>Export Recovery Phrase</h3>
-      </div>
-      <p>The "escape hatch" — users can export their BIP39 24-word mnemonic at any time. This requires fresh re-verification (PRF re-auth or password re-entry).</p>
-      <div class="code-block">
-        <div class="code-header"><span>RecoveryExport.tsx</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><code><span class="kw">const</span> { exportRecoveryPhrase, entropyPath } = <span class="fn">useWeb2Bridge</span>();
+      <!-- Step 5 -->
+      <div class="doc-step">
+        <div class="doc-step-header">
+          <span class="doc-step-num">5</span>
+          <h3>Export Recovery Phrase</h3>
+        </div>
+        <p>The "escape hatch" — users can export their BIP39 24-word mnemonic at any time. This requires fresh
+          re-verification (PRF re-auth or password re-entry).</p>
+        <div class="code-block">
+          <div class="code-header"><span>RecoveryExport.tsx</span><button class="copy-btn"
+              onclick="copyCode(this)">Copy</button></div>
+          <pre><code><span class="kw">const</span> { exportRecoveryPhrase, entropyPath } = <span class="fn">useWeb2Bridge</span>();
 
 <span class="kw">const</span> <span class="fn">handleExport</span> = <span class="kw">async</span> () => {
   <span class="cm">// PRF path: triggers fresh WebAuthn re-authentication</span>
@@ -564,62 +637,103 @@
   <span class="cm">// Display to user. NEVER log, store, or transmit.</span>
   <span class="fn">showMnemonicModal</span>(result.data);
 };</code></pre>
+        </div>
+        <div class="doc-note">
+          <strong>Important:</strong> The recovery phrase is the user's master key. It can be imported into any standard
+          Cardano wallet (Eternl, Nami, etc.) for full wallet recovery independent of Web2Bridge.
+        </div>
       </div>
-      <div class="doc-note">
-        <strong>Important:</strong> The recovery phrase is the user's master key. It can be imported into any standard Cardano wallet (Eternl, Nami, etc.) for full wallet recovery independent of Web2Bridge.
-      </div>
-    </div>
 
-    <!-- API Reference -->
-    <div class="doc-step">
-      <div class="doc-step-header">
-        <span class="doc-step-num">API</span>
-        <h3>Hook Reference</h3>
+      <!-- API Reference -->
+      <div class="doc-step">
+        <div class="doc-step-header">
+          <span class="doc-step-num">API</span>
+          <h3>Hook Reference</h3>
+        </div>
+        <div class="api-table-wrap">
+          <table class="api-table">
+            <thead>
+              <tr>
+                <th>Property / Method</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>isReady</code></td>
+                <td><code>boolean</code></td>
+                <td>Always <code>true</code> — the provider is synchronously ready.</td>
+              </tr>
+              <tr>
+                <td><code>isAuthenticated</code></td>
+                <td><code>boolean</code></td>
+                <td>Whether the user has an active session.</td>
+              </tr>
+              <tr>
+                <td><code>wallet</code></td>
+                <td><code>Web2BridgeWallet | null</code></td>
+                <td>CIP-30 wallet instance after login.</td>
+              </tr>
+              <tr>
+                <td><code>error</code></td>
+                <td><code>Web2BridgeError | null</code></td>
+                <td>Last error — consumers never need <code>try/catch</code>.</td>
+              </tr>
+              <tr>
+                <td><code>entropyPath</code></td>
+                <td><code>"prf" | "password" | null</code></td>
+                <td>Which entropy source is active.</td>
+              </tr>
+              <tr>
+                <td><code>login(opts?)</code></td>
+                <td><code>Promise&lt;Result&lt;void&gt;&gt;</code></td>
+                <td>Authenticate and derive wallet.</td>
+              </tr>
+              <tr>
+                <td><code>logout()</code></td>
+                <td><code>Promise&lt;Result&lt;void&gt;&gt;</code></td>
+                <td>Clear wallet and sign out.</td>
+              </tr>
+              <tr>
+                <td><code>exportRecoveryPhrase(opts?)</code></td>
+                <td><code>Promise&lt;Result&lt;string[]&gt;&gt;</code></td>
+                <td>Export 24-word mnemonic with re-verification.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="api-table-wrap">
-        <table class="api-table">
-          <thead>
-            <tr><th>Property / Method</th><th>Type</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>isReady</code></td><td><code>boolean</code></td><td>Always <code>true</code> — the provider is synchronously ready.</td></tr>
-            <tr><td><code>isAuthenticated</code></td><td><code>boolean</code></td><td>Whether the user has an active session.</td></tr>
-            <tr><td><code>wallet</code></td><td><code>Web2BridgeWallet | null</code></td><td>CIP-30 wallet instance after login.</td></tr>
-            <tr><td><code>error</code></td><td><code>Web2BridgeError | null</code></td><td>Last error — consumers never need <code>try/catch</code>.</td></tr>
-            <tr><td><code>entropyPath</code></td><td><code>"prf" | "password" | null</code></td><td>Which entropy source is active.</td></tr>
-            <tr><td><code>login(opts?)</code></td><td><code>Promise&lt;Result&lt;void&gt;&gt;</code></td><td>Authenticate and derive wallet.</td></tr>
-            <tr><td><code>logout()</code></td><td><code>Promise&lt;Result&lt;void&gt;&gt;</code></td><td>Clear wallet and sign out.</td></tr>
-            <tr><td><code>exportRecoveryPhrase(opts?)</code></td><td><code>Promise&lt;Result&lt;string[]&gt;&gt;</code></td><td>Export 24-word mnemonic with re-verification.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
 
-    <!-- Result Type -->
-    <div class="doc-step">
-      <div class="doc-step-header">
-        <span class="doc-step-num">TS</span>
-        <h3>Result Type</h3>
-      </div>
-      <p>All async methods return a <code>Result&lt;T&gt;</code> — a discriminated union that eliminates <code>try/catch</code> boilerplate:</p>
-      <div class="code-block">
-        <div class="code-header"><span>types.ts</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><code><span class="kw">type</span> Result&lt;T&gt; =
+      <!-- Result Type -->
+      <div class="doc-step">
+        <div class="doc-step-header">
+          <span class="doc-step-num">TS</span>
+          <h3>Result Type</h3>
+        </div>
+        <p>All async methods return a <code>Result&lt;T&gt;</code> — a discriminated union that eliminates
+          <code>try/catch</code> boilerplate:</p>
+        <div class="code-block">
+          <div class="code-header"><span>types.ts</span><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code><span class="kw">type</span> Result&lt;T&gt; =
   | { data: T;    error: <span class="num">null</span> }    <span class="cm">// Success</span>
   | { data: <span class="num">null</span>; error: Web2BridgeError }  <span class="cm">// Failure</span></code></pre>
+        </div>
       </div>
-    </div>
 
-    <!-- Custom Adapter -->
-    <div class="doc-step">
-      <div class="doc-step-header">
-        <span class="doc-step-num">🔌</span>
-        <h3>Writing a Custom Adapter</h3>
-      </div>
-      <p>Support any auth provider by implementing the <code>AuthAdapter</code> interface from <code>@web2bridge/core</code>:</p>
-      <div class="code-block">
-        <div class="code-header"><span>MyAdapter.ts</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><code><span class="kw">import type</span> { AuthAdapter, Result } <span class="kw">from</span> <span class="str">"@web2bridge/core"</span>;
+      <!-- Custom Adapter -->
+      <div class="doc-step">
+        <div class="doc-step-header">
+          <span class="doc-step-num">🔌</span>
+          <h3>Writing a Custom Adapter</h3>
+        </div>
+        <p>Support any auth provider by implementing the <code>AuthAdapter</code> interface from
+          <code>@web2bridge/core</code>:</p>
+        <div class="code-block">
+          <div class="code-header"><span>MyAdapter.ts</span><button class="copy-btn"
+              onclick="copyCode(this)">Copy</button></div>
+          <pre><code><span class="kw">import type</span> { AuthAdapter, Result } <span class="kw">from</span> <span class="str">"@web2bridge/core"</span>;
 
 <span class="kw">export class</span> <span class="fn">MyAdapter</span> <span class="kw">implements</span> AuthAdapter {
   <span class="cm">// Stable identifier — NEVER change after first deploy.</span>
@@ -631,148 +745,183 @@
   <span class="kw">async</span> <span class="fn">getUserId</span>(): Promise&lt;Result&lt;string&gt;&gt; { <span class="cm">/* ... */</span> }
   <span class="fn">isAuthenticated</span>(): boolean { <span class="cm">/* ... */</span> }
 }</code></pre>
-      </div>
-      <div class="doc-note">
-        <strong>providerId rules:</strong> Must be a lowercase alphanumeric string starting with a letter (e.g. <code>"clerk"</code>, <code>"auth0"</code>). Changing it after deployment will silently derive different wallets for all existing users.
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── FAQ ────────────────────────────────────────────────────────────────── -->
-<section id="faq" class="section">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-badge">Security</div>
-      <h2>Frequently Asked Questions</h2>
-      <p>Questions developers and security engineers ask most about Web2Bridge's architecture.</p>
-    </div>
-
-    <div class="faq-list">
-      <details class="faq-item" open>
-        <summary>Where are the private keys stored?</summary>
-        <div class="faq-answer">
-          <p><strong>Nowhere.</strong> Private keys are never stored — not in <code>localStorage</code>, <code>sessionStorage</code>, <code>IndexedDB</code>, cookies, or any server. The wallet is deterministically re-derived from the user's identity + entropy source on every login. It exists only in browser memory for the duration of the session.</p>
         </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>What if your servers get hacked?</summary>
-        <div class="faq-answer">
-          <p><strong>There are no servers.</strong> Web2Bridge is a client-side SDK with zero backend infrastructure. There is no database to breach, no key vault to compromise, and no API that handles private keys. The auth provider (Clerk, Auth0, etc.) only provides the user's identity — it never sees entropy, keys, or mnemonics.</p>
+        <div class="doc-note">
+          <strong>providerId rules:</strong> Must be a lowercase alphanumeric string starting with a letter (e.g.
+          <code>"clerk"</code>, <code>"auth0"</code>). Changing it after deployment will silently derive different
+          wallets for all existing users.
         </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>Can you access my users' wallets?</summary>
-        <div class="faq-answer">
-          <p><strong>No.</strong> The SDK is open source and runs entirely in the user's browser. Wallet derivation depends on a secret only the user possesses — either a hardware-backed passkey (WebAuthn PRF) or a spending password. Neither the SDK author, the dApp developer, nor the auth provider can reconstruct the wallet without the user's secret.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>What happens if the user loses their device?</summary>
-        <div class="faq-answer">
-          <p><strong>PRF path:</strong> If the passkey is synced via iCloud Keychain or Google Password Manager, the wallet can be recovered on a new device. If not, the user needs their exported recovery phrase.</p>
-          <p><strong>Password path:</strong> The wallet can be re-derived on any device by signing in and entering the same spending password.</p>
-          <p><strong>Recovery phrase:</strong> As a last resort, users can import their 24-word BIP39 mnemonic into any standard Cardano wallet (Eternl, Nami, etc.).</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>Is the wallet standard or proprietary?</summary>
-        <div class="faq-answer">
-          <p><strong>Fully standard.</strong> The wallet uses a BIP39 24-word mnemonic, BIP32 HD derivation (<code>m/1852'/1815'/AppID'/0/0</code>), and is CIP-30 compatible. The recovery phrase works with any Cardano wallet that supports BIP39 mnemonic import.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>What if the auth provider goes down?</summary>
-        <div class="faq-answer">
-          <p>If the auth provider (e.g. Clerk) is temporarily unavailable, users can't initiate a new login. However, since the wallet is derived from the user's identity + secret, <strong>the wallet itself is never at risk</strong>. Users who have exported their recovery phrase can always import it into a standalone wallet.</p>
-          <p>Additionally, because the SDK is provider-agnostic, developers can migrate to a different auth provider. As long as the same <code>providerId</code> and <code>userId</code> are preserved, the same wallet will be derived.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>Can two different auth providers produce the same wallet?</summary>
-        <div class="faq-answer">
-          <p><strong>No.</strong> Every user ID is namespaced with the provider identifier before being used as a cryptographic input: <code>clerk:user_abc123</code> vs <code>auth0:user_abc123</code>. Different providers always produce different wallets, even for the same underlying user.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>How strong is the password fallback?</summary>
-        <div class="faq-answer">
-          <p>The fallback path uses <strong>Argon2id</strong> by default (64 MB memory, 3 iterations, parallelism 1) — the current gold standard for password hashing, resistant to GPU and ASIC attacks. Password strength is enforced via zxcvbn with a minimum score of 3. Weak passwords are rejected before derivation begins.</p>
-          <p>PBKDF2-SHA-256 (210,000 iterations) is available as a lighter alternative where WASM is not feasible.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>Is the code audited?</summary>
-        <div class="faq-answer">
-          <p>The SDK is open source and available for review on <a href="https://github.com/latheesan-k/Web2Bridge-SDK" target="_blank" rel="noopener">GitHub</a>. The cryptographic primitives rely on the <strong>Web Crypto API</strong> (browser-native, FIPS-validated implementations) and <strong>WebAuthn</strong> (hardware-backed). No custom cryptography is invented — the SDK orchestrates standard, well-reviewed building blocks.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>What about phishing attacks?</summary>
-        <div class="faq-answer">
-          <p>WebAuthn PRF is inherently phishing-resistant — the browser binds the passkey to the origin (domain), so credentials cannot be used on a different site. For the password path, the spending password is combined with the user's namespaced identity, making credential-stuffing attacks ineffective.</p>
-        </div>
-      </details>
-    </div>
-  </div>
-</section>
-
-<!-- ─── Footer ────────────────────────────────────────────────────────────── -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <span class="logo-icon">⬡</span> Web2Bridge SDK
-        <p>Zero-storage, stateless, self-custodial wallets for Cardano.</p>
-      </div>
-      <div class="footer-links">
-        <a href="demo/">Live Demo</a>
-        <a href="https://github.com/latheesan-k/Web2Bridge-SDK" target="_blank" rel="noopener">GitHub</a>
-        <a href="#docs">Documentation</a>
-        <a href="#faq">FAQ</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>Copyright &copy; 2026 <a href="https://github.com/latheesan-k" target="_blank" rel="noopener">Latheesan Kanesamoorthy</a>. Released under the <a href="https://github.com/latheesan-k/Web2Bridge-SDK/blob/main/LICENSE" target="_blank" rel="noopener">Apache License 2.0</a>. Built for the Cardano ecosystem.</p>
+  </section>
+
+  <!-- ─── FAQ ────────────────────────────────────────────────────────────────── -->
+  <section id="faq" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">Security</div>
+        <h2>Frequently Asked Questions</h2>
+        <p>Questions developers and security engineers ask most about Web2Bridge's architecture.</p>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary>Where are the private keys stored?</summary>
+          <div class="faq-answer">
+            <p><strong>Nowhere.</strong> Private keys are never stored — not in <code>localStorage</code>,
+              <code>sessionStorage</code>, <code>IndexedDB</code>, cookies, or any server. The wallet is
+              deterministically re-derived from the user's identity + entropy source on every login. It exists only in
+              browser memory for the duration of the session.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What if your servers get hacked?</summary>
+          <div class="faq-answer">
+            <p><strong>There are no servers.</strong> Web2Bridge is a client-side SDK with zero backend infrastructure.
+              There is no database to breach, no key vault to compromise, and no API that handles private keys. The auth
+              provider (Clerk, Auth0, etc.) only provides the user's identity — it never sees entropy, keys, or
+              mnemonics.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Can you access my users' wallets?</summary>
+          <div class="faq-answer">
+            <p><strong>No.</strong> The SDK is open source and runs entirely in the user's browser. Wallet derivation
+              depends on a secret only the user possesses — either a hardware-backed passkey (WebAuthn PRF) or a
+              spending password. Neither the SDK author, the dApp developer, nor the auth provider can reconstruct the
+              wallet without the user's secret.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What happens if the user loses their device?</summary>
+          <div class="faq-answer">
+            <p><strong>PRF path:</strong> If the passkey is synced via iCloud Keychain or Google Password Manager, the
+              wallet can be recovered on a new device. If not, the user needs their exported recovery phrase.</p>
+            <p><strong>Password path:</strong> The wallet can be re-derived on any device by signing in and entering the
+              same spending password.</p>
+            <p><strong>Recovery phrase:</strong> As a last resort, users can import their 24-word BIP39 mnemonic into
+              any standard Cardano wallet (Eternl, Nami, etc.).</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Is the wallet standard or proprietary?</summary>
+          <div class="faq-answer">
+            <p><strong>Fully standard.</strong> The wallet uses a BIP39 24-word mnemonic, BIP32 HD derivation
+              (<code>m/1852'/1815'/AppID'/0/0</code>), and is CIP-30 compatible. The recovery phrase works with any
+              Cardano wallet that supports BIP39 mnemonic import.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What if the auth provider goes down?</summary>
+          <div class="faq-answer">
+            <p>If the auth provider (e.g. Clerk) is temporarily unavailable, users can't initiate a new login. However,
+              since the wallet is derived from the user's identity + secret, <strong>the wallet itself is never at
+                risk</strong>. Users who have exported their recovery phrase can always import it into a standalone
+              wallet.</p>
+            <p>Additionally, because the SDK is provider-agnostic, developers can migrate to a different auth provider.
+              As long as the same <code>providerId</code> and <code>userId</code> are preserved, the same wallet will be
+              derived.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Can two different auth providers produce the same wallet?</summary>
+          <div class="faq-answer">
+            <p><strong>No.</strong> Every user ID is namespaced with the provider identifier before being used as a
+              cryptographic input: <code>clerk:user_abc123</code> vs <code>auth0:user_abc123</code>. Different providers
+              always produce different wallets, even for the same underlying user.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>How strong is the password fallback?</summary>
+          <div class="faq-answer">
+            <p>The fallback path uses <strong>Argon2id</strong> by default (64 MB memory, 3 iterations, parallelism 1) —
+              the current gold standard for password hashing, resistant to GPU and ASIC attacks. Password strength is
+              enforced via zxcvbn with a minimum score of 3. Weak passwords are rejected before derivation begins.</p>
+            <p>PBKDF2-SHA-256 (210,000 iterations) is available as a lighter alternative where WASM is not feasible.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Is the code audited?</summary>
+          <div class="faq-answer">
+            <p>The SDK is open source and available for review on <a
+                href="https://github.com/latheesan-k/Web2Bridge-SDK" target="_blank" rel="noopener">GitHub</a>. The
+              cryptographic primitives rely on the <strong>Web Crypto API</strong> (browser-native, FIPS-validated
+              implementations) and <strong>WebAuthn</strong> (hardware-backed). No custom cryptography is invented — the
+              SDK orchestrates standard, well-reviewed building blocks.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What about phishing attacks?</summary>
+          <div class="faq-answer">
+            <p>WebAuthn PRF is inherently phishing-resistant — the browser binds the passkey to the origin (domain), so
+              credentials cannot be used on a different site. For the password path, the spending password is combined
+              with the user's namespaced identity, making credential-stuffing attacks ineffective.</p>
+          </div>
+        </details>
+      </div>
     </div>
-  </div>
-</footer>
+  </section>
 
-<script>
-function copyCode(btn) {
-  const pre = btn.closest('.code-block').querySelector('pre');
-  const text = pre.textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 2000);
-  });
-}
+  <!-- ─── Footer ────────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="logo-icon">⬡</span> Web2Bridge SDK
+          <p>Zero-storage, stateless, self-custodial wallets for Cardano.</p>
+        </div>
+        <div class="footer-links">
+          <a href="demo/">Live Demo</a>
+          <a href="https://github.com/latheesan-k/Web2Bridge-SDK" target="_blank" rel="noopener">GitHub</a>
+          <a href="#docs">Documentation</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Copyright &copy; 2026 <a href="https://github.com/latheesan-k" target="_blank" rel="noopener">Latheesan
+            Kanesamoorthy</a>. Released under the <a
+            href="https://github.com/latheesan-k/Web2Bridge-SDK/blob/main/LICENSE" target="_blank" rel="noopener">Apache
+            License 2.0</a>. Built for the Cardano ecosystem.</p>
+      </div>
+    </div>
+  </footer>
 
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth' });
-      document.getElementById('nav').classList.remove('open');
+  <script>
+    function copyCode(btn) {
+      const pre = btn.closest('.code-block').querySelector('pre');
+      const text = pre.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+      });
     }
-  });
-});
 
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('nav');
-  nav.classList.toggle('scrolled', window.scrollY > 60);
-});
-</script>
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+          document.getElementById('nav').classList.remove('open');
+        }
+      });
+    });
+
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('nav');
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+  </script>
 </body>
+
 </html>

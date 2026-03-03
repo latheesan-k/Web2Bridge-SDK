@@ -74,3 +74,19 @@ export class EntropyPathMismatchError extends Web2BridgeError {
     this.name = "EntropyPathMismatchError";
   }
 }
+
+export class StorageError extends Web2BridgeError {
+  readonly code = "STORAGE_ERROR";
+  constructor(message: string) {
+    super(message);
+    this.name = "StorageError";
+  }
+}
+
+export class EncryptionError extends Web2BridgeError {
+  readonly code = "ENCRYPTION_ERROR";
+  constructor(message: string) {
+    super(message);
+    this.name = "EncryptionError";
+  }
+}
