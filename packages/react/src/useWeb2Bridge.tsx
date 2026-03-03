@@ -348,13 +348,19 @@ export function Web2BridgeProvider({
       let prfCredentialId: string | undefined;
 
       if (isPrfSupported) {
+        console.log("[Web2Bridge] PRF is supported, attempting PRF-based wallet derivation");
         try {
           const prfResult = await getPRFSecret(nsUserId);
+          console.log("[Web2Bridge] PRF secret obtained successfully", {
+            credentialId: prfResult.credentialId,
+            secretLength: prfResult.prfSecret.byteLength
+          });
           prfCredentialId = prfResult.credentialId;
           const entropyResult = await generateEntropy(nsUserId, new Uint8Array(prfResult.prfSecret), {
             algorithm: providerConfig.kdf ?? "hkdf",
           });
           if (entropyResult.error) {
+            console.error("[Web2Bridge] Entropy generation failed:", entropyResult.error);
             if (!providerConfig.fallback.enabled) {
               setError(entropyResult.error);
               return { data: null, error: entropyResult.error };
@@ -362,29 +368,42 @@ export function Web2BridgeProvider({
           } else {
             entropy = entropyResult.data!;
             path = "prf";
+            console.log("[Web2Bridge] PRF path successful, entropy generated");
           }
         } catch (e) {
+          console.error("[Web2Bridge] PRF authentication failed:", e);
           if (e instanceof PasskeyRegistrationError || e instanceof PasskeyAuthError) {
+            console.log("[Web2Bridge] Falling back to password (passkey error):", e.message);
             if (!providerConfig.fallback.enabled) {
               const errObj = e as CoreError;
               setError(errObj);
               return { data: null, error: errObj };
             }
+            // PRF failed, mark as not supported so UI shows password input
+            setPrfSupported(false);
           } else {
+            console.log("[Web2Bridge] Falling back to password (unknown error)");
             if (!providerConfig.fallback.enabled) {
               const errObj = new PRFNotSupportedError();
               setError(errObj);
               return { data: null, error: errObj };
             }
+            // PRF failed, mark as not supported so UI shows password input
+            setPrfSupported(false);
           }
         }
+      } else {
+        console.log("[Web2Bridge] PRF not supported, will use password fallback");
       }
 
       if (!entropy && providerConfig.fallback.enabled) {
         const password = options?.password;
         if (!password) {
+          console.log("[Web2Bridge] No entropy and no password provided");
           const errObj = new PRFNotSupportedError();
           setError(errObj);
+          // Mark PRF as not supported so UI shows password input
+          setPrfSupported(false);
           return {
             data: null,
             error: Object.assign(errObj, {
@@ -392,6 +411,7 @@ export function Web2BridgeProvider({
             }),
           };
         }
+        console.log("[Web2Bridge] Using password fallback path");
 
         const entropyResult = await generateEntropyFromPassword(nsUserId, password, {
           algorithm: providerConfig.fallback.kdf ?? "argon2id",
@@ -485,6 +505,7 @@ export function Web2BridgeProvider({
             setIsWalletInitialized(true);
             setCredentialId(prfResult.credentialId);
             setEntropyPath("prf");
+            setIsWalletReady(true); // Mark wallet as ready (addresses fetched lazily on first use)
 
             return { data: undefined, error: null };
           } catch (e) {
